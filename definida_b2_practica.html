@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 2 · Práctica — Integral definida · Las Chapas ECOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  :root{
+    --navy:#1a2e4a; --navy-light:#2a4468; --teal:#1d7a6b; --teal-light:#e4f2ef;
+    --orange:#e07b3a; --orange-light:#fdeee0; --cream:#f5f2eb; --ink:#2b2b2b;
+    --muted:#6b6f76; --white:#ffffff; --line:#e4e0d6;
+    --red:#c65b4a; --red-light:#fbeae7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Nunito Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  h1,h2,h3,.brand{font-family:'Nunito',sans-serif}
+  a{color:inherit;text-decoration:none}
+
+  header.top{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;flex-wrap:wrap}
+  header.top a{color:#cfd8e6}
+  header.top a:hover{color:#fff}
+  header.top .sep{color:#5c6b82}
+  header.top .current{color:#fff;font-weight:800}
+
+  .wrap{max-width:720px;margin:0 auto;padding:30px 24px 60px}
+
+  .titlebar{text-align:center;margin-bottom:22px}
+  .titlebar .kicker{display:inline-block;background:var(--teal-light);color:var(--teal);font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:12px}
+  .titlebar h1{font-size:1.6rem;color:var(--navy);margin:0 0 6px;font-weight:900}
+  .titlebar p{color:var(--muted);margin:0;font-size:.95rem}
+
+  #gate{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center}
+  #gate input{width:100%;max-width:340px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;margin:14px 0}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:800;font-size:.95rem;border:none;cursor:pointer;font-family:inherit}
+  .btn.on{background:var(--teal);color:#fff}
+  .btn.on:hover{background:#166357}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f0ede4}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  #quiz{display:none}
+  .scoreboard{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin-bottom:18px;font-weight:700;color:var(--navy);font-size:.9rem}
+  .scoreboard .ok{color:var(--teal)}
+  .scoreboard .bad{color:var(--red)}
+
+  .qcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .qtag{display:inline-block;font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px}
+  .qtag.teoria{background:var(--teal-light);color:var(--teal)}
+  .qtag.aplicacion{background:var(--orange-light);color:var(--orange)}
+  .qtext{font-size:1.15rem;color:var(--navy);font-weight:700;margin-bottom:20px}
+
+  .opt{display:block;width:100%;text-align:left;background:#fbfbf9;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px;font-family:inherit;font-size:1rem;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--teal)}
+  .opt.correcta{background:var(--teal-light);border-color:var(--teal);color:var(--navy);font-weight:700}
+  .opt.incorrecta{background:var(--red-light);border-color:var(--red);color:#8a3a2e;font-weight:700}
+  .opt:disabled{cursor:default}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--teal-light);color:#12574c}
+  .feedback.bad{background:var(--red-light);color:#8a3a2e}
+
+  .controls{display:flex;justify-content:flex-end;margin-top:20px}
+
+  .nav-bottom{display:flex;justify-content:space-between;margin-top:28px}
+  @media (max-width:600px){ .wrap{padding:0 16px} }
+  mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="index.html">Portal de Integral definida</a>
+  <span class="sep">·</span>
+  <a href="definida_b2_intro.html">Bloque 2</a>
+  <span class="sep">·</span>
+  <span class="current">Práctica libre</span>
+</header>
+
+<div class="wrap">
+  <div class="titlebar">
+    <span class="kicker">Bloque 2 · Práctica libre</span>
+    <h1>La integral definida: definición, signo y propiedades</h1>
+    <p>Preguntas aleatorias de teoría y de aplicación del bloque, con la explicación de cada respuesta. Cada vez que entras, el orden cambia. Ten a mano lápiz, papel y la calculadora.</p>
+  </div>
+
+  <div id="gate">
+    <p style="margin:0;color:var(--muted)">Escribe tu nombre para empezar (no hay límite de tiempo ni de intentos):</p>
+    <input type="text" id="nombre" placeholder="Nombre y apellidos">
+    <br>
+    <button class="btn on" onclick="empezar()">Empezar a practicar →</button>
+  </div>
+
+  <div id="quiz">
+    <div class="scoreboard">
+      <span id="contador">Pregunta 1</span>
+      <span><span class="ok" id="okcount">0</span> correctas · <span class="bad" id="badcount">0</span> incorrectas</span>
+    </div>
+
+    <div class="qcard">
+      <span class="qtag" id="qtag">Teoría</span>
+      <div class="qtext" id="qtext">—</div>
+      <div id="opciones"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="controls">
+        <button class="btn on" id="btnSiguiente" onclick="siguiente()" disabled>Siguiente pregunta →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom" style="flex-wrap:wrap;gap:12px">
+    <a class="btn ghost" href="index.html">🏠 Portal</a>
+    <a class="btn ghost" href="definida_b2_intro.html">← Volver a la teoría</a>
+    <a class="btn on" href="https://pepivalenzuela.github.io/panel-matematicas/#panel">Formativas en mi panel →</a>
+    <a class="btn ghost" href="definida_b3_intro.html">Bloque 3 →</a>
+  </div>
+</div>
+
+<script>
+// ---------- Banco de preguntas del bloque
+const BANCO_TEORIA = [
+ {
+  "q": "¿Qué diferencia hay entre \\(\\int f(x)\\,dx\\) y \\(\\int_a^b f(x)\\,dx\\)?",
+  "o": [
+   "La segunda siempre lleva + C",
+   "La primera es un número; la segunda una familia de funciones",
+   "Ninguna, son lo mismo",
+   "La primera es una familia de funciones; la segunda es un número"
+  ],
+  "c": 3,
+  "e": "La indefinida es F(x) + C; la definida es un número real."
+ },
+ {
+  "q": "Si f(x) ≤ 0 en todo [a, b] (con a &lt; b), la integral definida de f entre a y b es…",
+  "o": [
+   "Menor o igual que 0",
+   "Igual al área",
+   "Siempre 0",
+   "Mayor que 0"
+  ],
+  "c": 0,
+  "e": "Todas las alturas f(xᵢ) son negativas, así que la suma de los rectángulos es negativa."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_a^a f(x)\\,dx\\)?",
+  "o": [
+   "1",
+   "a·f(a)",
+   "f(a)",
+   "0"
+  ],
+  "c": 3,
+  "e": "La región tiene anchura 0: su «área» es 0."
+ },
+ {
+  "q": "Si intercambiamos los límites de integración, \\(\\displaystyle\\int_b^a f(x)\\,dx\\) es igual a…",
+  "o": [
+   "\\(\\displaystyle\\int_a^b f(x)\\,dx\\)",
+   "0",
+   "\\(\\dfrac{1}{\\int_a^b f(x)\\,dx}\\)",
+   "\\(-\\displaystyle\\int_a^b f(x)\\,dx\\)"
+  ],
+  "c": 3,
+  "e": "Cambiar el orden de los límites cambia el signo de la integral."
+ },
+ {
+  "q": "Si a &lt; c &lt; b, ¿qué afirma la propiedad de aditividad respecto al intervalo?",
+  "o": [
+   "\\(\\int_a^b f = \\int_a^c f \\cdot \\int_c^b f\\)",
+   "\\(\\int_a^b f = \\int_a^c f + \\int_c^b f\\)",
+   "\\(\\int_a^b f = 2\\int_a^c f\\)",
+   "\\(\\int_a^b f = \\int_a^c f - \\int_c^b f\\)"
+  ],
+  "c": 1,
+  "e": "El área de toda la región es la suma de las áreas de los dos trozos."
+ },
+ {
+  "q": "¿Cuál es correcta si k es una constante?",
+  "o": [
+   "\\(\\int_a^b k\\,f(x)\\,dx = \\int_a^b f(x)\\,dx\\)",
+   "\\(\\int_a^b k\\,f(x)\\,dx = k + \\int_a^b f(x)\\,dx\\)",
+   "\\(\\int_a^b k\\,f(x)\\,dx = k\\int_a^b f(x)\\,dx\\)",
+   "\\(\\int_a^b k\\,f(x)\\,dx = k^2\\int_a^b f(x)\\,dx\\)"
+  ],
+  "c": 2,
+  "e": "Las constantes multiplicativas salen fuera de la integral."
+ },
+ {
+  "q": "Si f(x) ≤ g(x) en todo [a, b], entonces…",
+  "o": [
+   "No se puede decir nada",
+   "\\(\\int_a^b f \\le \\int_a^b g\\)",
+   "\\(\\int_a^b f \\ge \\int_a^b g\\)",
+   "\\(\\int_a^b f = \\int_a^b g\\)"
+  ],
+  "c": 1,
+  "e": "Es la propiedad de monotonía: la integral respeta las desigualdades."
+ },
+ {
+  "q": "Si f cambia de signo en [a, b], la integral definida de f entre a y b es…",
+  "o": [
+   "Siempre positiva",
+   "Siempre 0",
+   "La suma de todas las áreas",
+   "El área por encima del eje menos el área por debajo"
+  ],
+  "c": 3,
+  "e": "Los trozos por debajo del eje aportan valores negativos y restan."
+ },
+ {
+  "q": "Si f(x) ≤ 0 en [a, b], el área entre la gráfica de f y el eje OX es…",
+  "o": [
+   "\\(\\left|\\int_a^b f(x)\\,dx\\right|\\)",
+   "\\(-\\int_b^a f(x)\\,dx\\)",
+   "\\(\\int_a^b f(x)\\,dx\\)",
+   "\\(\\left(\\int_a^b f(x)\\,dx\\right)^2\\)"
+  ],
+  "c": 0,
+  "e": "La integral sale negativa; el área es su valor absoluto. (Ojo: la tercera opción es igual a la integral, que es negativa.)"
+ },
+ {
+  "q": "Si f es impar (f(−x) = −f(x)) y continua, \\(\\displaystyle\\int_{-a}^{a} f(x)\\,dx\\) vale…",
+  "o": [
+   "\\(2\\int_0^a f(x)\\,dx\\)",
+   "0",
+   "Siempre positivo",
+   "f(a)"
+  ],
+  "c": 1,
+  "e": "Las regiones a la izquierda y a la derecha son iguales, una arriba y otra abajo, y se compensan."
+ },
+ {
+  "q": "Si f es par (f(−x) = f(x)) y continua, \\(\\displaystyle\\int_{-a}^{a} f(x)\\,dx\\) vale…",
+  "o": [
+   "\\(2\\int_0^a f(x)\\,dx\\)",
+   "\\(\\int_0^a f(x)\\,dx\\)",
+   "0",
+   "\\(-\\int_0^a f(x)\\,dx\\)"
+  ],
+  "c": 0,
+  "e": "La gráfica es simétrica respecto al eje OY: las dos mitades aportan lo mismo."
+ },
+ {
+  "q": "En \\(\\displaystyle\\int_a^b f(x)\\,dx\\), ¿cómo se llaman a y b?",
+  "o": [
+   "Constantes de integración",
+   "Integrandos",
+   "Primitivas",
+   "Límites de integración (inferior y superior)"
+  ],
+  "c": 3,
+  "e": "f(x) es el integrando; a y b, los límites de integración."
+ },
+ {
+  "q": "¿Es cierto que \\(\\displaystyle\\int_a^b f(x)\\,dx = \\int_a^b f(t)\\,dt\\)?",
+  "o": [
+   "Sí, el nombre de la variable no cambia el resultado",
+   "No, la segunda depende de t",
+   "Solo si a = 0",
+   "Solo si f es positiva"
+  ],
+  "c": 0,
+  "e": "La variable de integración es «muda»: el resultado es un número que solo depende de f, a y b."
+ },
+ {
+  "q": "Si f es continua y su integral entre a y b vale 0, ¿el área entre f y el eje OX es 0?",
+  "o": [
+   "Sí, siempre",
+   "No necesariamente: puede haber áreas iguales arriba y abajo que se compensan",
+   "No, el área es siempre 1",
+   "Sí, si a &lt; b"
+  ],
+  "c": 1,
+  "e": "Por ejemplo, x³ − 4x en [−2, 2]: la integral es 0 y el área es 8."
+ },
+ {
+  "q": "¿Es cierto en general que \\(\\int_a^b f(x)g(x)\\,dx = \\int_a^b f(x)\\,dx\\cdot\\int_a^b g(x)\\,dx\\)?",
+  "o": [
+   "Sí, si f y g son positivas",
+   "Solo si a = 0",
+   "Sí, siempre",
+   "No, la integral de un producto no es el producto de las integrales"
+  ],
+  "c": 3,
+  "e": "Por ejemplo, con f = g = x en [0, 1]: la integral de x² es 1/3, pero (1/2)·(1/2) = 1/4."
+ },
+ {
+  "q": "Si \\(\\int_a^b f(x)\\,dx = A\\), ¿cuánto vale \\(\\int_a^b \\big(f(x)+1\\big)\\,dx\\)?",
+  "o": [
+   "A + (b − a)",
+   "A·(b − a)",
+   "A",
+   "A + 1"
+  ],
+  "c": 0,
+  "e": "Por la propiedad de la suma: A + ∫ₐᵇ 1 dx = A + (b − a)."
+ }
+];
+
+const BANCO_APLICACION = [
+ {
+  "q": "Si \\(\\int_0^3 f(x)\\,dx = 5\\) y \\(\\int_3^7 f(x)\\,dx = 2\\), ¿cuánto vale \\(\\int_0^7 f(x)\\,dx\\)?",
+  "o": [
+   "10",
+   "3",
+   "−3",
+   "7"
+  ],
+  "c": 3,
+  "e": "Por aditividad: 5 + 2 = 7."
+ },
+ {
+  "q": "Si \\(\\int_1^4 f(x)\\,dx = 6\\), ¿cuánto vale \\(\\int_4^1 f(x)\\,dx\\)?",
+  "o": [
+   "0",
+   "−6",
+   "1/6",
+   "6"
+  ],
+  "c": 1,
+  "e": "Al intercambiar los límites, la integral cambia de signo."
+ },
+ {
+  "q": "Si \\(\\int_0^2 f(x)\\,dx = 3\\) y \\(\\int_0^2 g(x)\\,dx = -1\\), ¿cuánto vale \\(\\int_0^2 \\big(2f(x)-3g(x)\\big)\\,dx\\)?",
+  "o": [
+   "6",
+   "9",
+   "3",
+   "−9"
+  ],
+  "c": 1,
+  "e": "2·3 − 3·(−1) = 6 + 3 = 9."
+ },
+ {
+  "q": "Si \\(\\int_0^5 f(x)\\,dx = 10\\) y \\(\\int_0^2 f(x)\\,dx = 4\\), ¿cuánto vale \\(\\int_2^5 f(x)\\,dx\\)?",
+  "o": [
+   "2.5",
+   "6",
+   "−6",
+   "14"
+  ],
+  "c": 1,
+  "e": "Como ∫₀⁵ = ∫₀² + ∫₂⁵: 10 = 4 + ∫₂⁵, luego ∫₂⁵ = 6."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{-3}^{3} x^5\\,dx\\)?",
+  "o": [
+   "0",
+   "486",
+   "−243",
+   "243"
+  ],
+  "c": 0,
+  "e": "x⁵ es impar y el intervalo es simétrico: las dos mitades se compensan."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{-1}^{1} (x^3+2)\\,dx\\)?",
+  "o": [
+   "2",
+   "0",
+   "4",
+   "6"
+  ],
+  "c": 2,
+  "e": "La parte x³ es impar y aporta 0; la constante 2 aporta 2·(1 − (−1)) = 4."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{2}^{2} e^{x^2}\\,dx\\)?",
+  "o": [
+   "\\(e^4\\)",
+   "No se puede calcular",
+   "1",
+   "0"
+  ],
+  "c": 3,
+  "e": "Los límites son iguales: la integral vale 0, sea cual sea la función."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{1}^{3} 5\\,dx\\)?",
+  "o": [
+   "5",
+   "10",
+   "15",
+   "20"
+  ],
+  "c": 1,
+  "e": "Rectángulo de base 3 − 1 = 2 y altura 5."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{0}^{4} |x-2|\\,dx\\)?",
+  "o": [
+   "0",
+   "8",
+   "4",
+   "2"
+  ],
+  "c": 2,
+  "e": "Son dos triángulos de base 2 y altura 2, cada uno de área 2."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{0}^{2} |2x-3|\\,dx\\)?",
+  "o": [
+   "5/2",
+   "9/4",
+   "−1",
+   "1"
+  ],
+  "c": 0,
+  "e": "Partimos en x = 3/2: un triángulo de área 9/4 y otro de 1/4. Total 10/4 = 5/2."
+ },
+ {
+  "q": "Sabiendo que \\(\\int_0^2 (x^2-2x)\\,dx = -\\frac43\\), ¿cuál es el área entre y = x² − 2x y el eje OX en [0, 2]?",
+  "o": [
+   "0 u²",
+   "8/3 u²",
+   "−4/3 u²",
+   "4/3 u²"
+  ],
+  "c": 3,
+  "e": "La función es negativa en (0, 2): el área es el valor absoluto, 4/3."
+ },
+ {
+  "q": "Sabiendo que \\(\\int_{-2}^0 (x^3-4x)\\,dx = 4\\), ¿cuál es el área entre y = x³ − 4x y el eje OX en [−2, 2]?",
+  "o": [
+   "16 u²",
+   "4 u²",
+   "0 u²",
+   "8 u²"
+  ],
+  "c": 3,
+  "e": "f es impar: el trozo de [0, 2] tiene integral −4 y área 4. Área total 4 + 4 = 8 (aunque la integral sea 0)."
+ },
+ {
+  "q": "Si \\(\\int_0^1 f(x)\\,dx = 2\\), ¿cuánto vale \\(\\int_0^1 \\big(f(x)+3\\big)\\,dx\\)?",
+  "o": [
+   "6",
+   "3",
+   "2",
+   "5"
+  ],
+  "c": 3,
+  "e": "2 + 3·(1 − 0) = 5."
+ },
+ {
+  "q": "f es par y \\(\\int_0^3 f(x)\\,dx = 4\\). ¿Cuánto vale \\(\\int_{-3}^3 f(x)\\,dx\\)?",
+  "o": [
+   "4",
+   "−4",
+   "8",
+   "0"
+  ],
+  "c": 2,
+  "e": "Por la simetría de una función par: 2·4 = 8."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{-2}^{1} x\\,dx\\)? (Piensa en los triángulos.)",
+  "o": [
+   "−2.5",
+   "−1.5",
+   "2.5",
+   "1.5"
+  ],
+  "c": 1,
+  "e": "Triángulo bajo el eje en [−2, 0], de área 2 (resta), y sobre el eje en [0, 1], de área 0.5 (suma): −2 + 0.5 = −1.5."
+ },
+ {
+  "q": "¿Cuál es el área entre la recta y = x y el eje OX para x entre −2 y 1?",
+  "o": [
+   "2.5 u²",
+   "−1.5 u²",
+   "3 u²",
+   "1.5 u²"
+  ],
+  "c": 0,
+  "e": "Las áreas se suman siempre en positivo: 2 + 0.5 = 2.5."
+ }
+];
+
+let orden = [];
+let idx = 0;
+let ok = 0, bad = 0;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function empezar(){
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!nombre){ alert('Escribe tu nombre para empezar.'); return; }
+  document.getElementById('gate').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  generarSecuencia();
+  mostrarPregunta();
+}
+
+function generarSecuencia(){
+  const todas = shuffle(
+    BANCO_TEORIA.map(x=>({...x,tipo:'teoria'})).concat(
+    BANCO_APLICACION.map(x=>({...x,tipo:'aplicacion'})))
+  );
+  orden = todas;
+  idx = 0; ok = 0; bad = 0;
+}
+
+function mostrarPregunta(){
+  if(idx >= orden.length){ generarSecuencia(); }
+  const item = orden[idx];
+  document.getElementById('contador').textContent = `Pregunta ${idx+1}`;
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  const tag = document.getElementById('qtag');
+  tag.textContent = item.tipo === 'teoria' ? 'Teoría' : 'Aplicación';
+  tag.className = 'qtag ' + item.tipo;
+  document.getElementById('qtext').innerHTML = item.q;
+
+  const opciones = shuffle(item.o.map((texto,i)=>({texto, esCorrecta:i===item.c})));
+  const cont = document.getElementById('opciones');
+  cont.innerHTML='';
+  opciones.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML = op.texto;
+    btn.onclick = ()=>responder(btn, op.esCorrecta, opciones, cont);
+    cont.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnSiguiente').disabled = true;
+  if(window.MathJax){ MathJax.typesetClear([cont, document.getElementById('qtext')]); MathJax.typesetPromise([cont, document.getElementById('qtext')]); }
+}
+
+function responder(btnPulsado, esCorrecta, opciones, cont){
+  const botones = cont.querySelectorAll('.opt');
+  botones.forEach(b=>b.disabled=true);
+  botones.forEach((b,i)=>{
+    if(opciones[i].esCorrecta) b.classList.add('correcta');
+  });
+  if(!esCorrecta) btnPulsado.classList.add('incorrecta');
+
+  const fb = document.getElementById('feedback');
+  const exp = orden[idx] && orden[idx].e ? '<div style="margin-top:8px;font-weight:400">💡 ' + orden[idx].e + '</div>' : '';
+  if(esCorrecta){
+    ok++;
+    fb.innerHTML = '<b>✓ Correcto.</b>' + exp;
+    fb.className = 'feedback show ok';
+  } else {
+    bad++;
+    fb.innerHTML = '<b>✗ No es correcto. La respuesta correcta está marcada en verde.</b>' + exp;
+    fb.className = 'feedback show bad';
+  }
+  if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise([fb]).catch(()=>{}); }
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  document.getElementById('btnSiguiente').disabled = false;
+}
+
+function siguiente(){
+  idx++;
+  mostrarPregunta();
+}
+</script>
+
+</body>
+</html>

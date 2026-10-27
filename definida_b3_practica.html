@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 3 · Práctica — Integral definida · Las Chapas ECOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  :root{
+    --navy:#1a2e4a; --navy-light:#2a4468; --teal:#1d7a6b; --teal-light:#e4f2ef;
+    --orange:#e07b3a; --orange-light:#fdeee0; --cream:#f5f2eb; --ink:#2b2b2b;
+    --muted:#6b6f76; --white:#ffffff; --line:#e4e0d6;
+    --red:#c65b4a; --red-light:#fbeae7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Nunito Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  h1,h2,h3,.brand{font-family:'Nunito',sans-serif}
+  a{color:inherit;text-decoration:none}
+
+  header.top{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;flex-wrap:wrap}
+  header.top a{color:#cfd8e6}
+  header.top a:hover{color:#fff}
+  header.top .sep{color:#5c6b82}
+  header.top .current{color:#fff;font-weight:800}
+
+  .wrap{max-width:720px;margin:0 auto;padding:30px 24px 60px}
+
+  .titlebar{text-align:center;margin-bottom:22px}
+  .titlebar .kicker{display:inline-block;background:var(--teal-light);color:var(--teal);font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:12px}
+  .titlebar h1{font-size:1.6rem;color:var(--navy);margin:0 0 6px;font-weight:900}
+  .titlebar p{color:var(--muted);margin:0;font-size:.95rem}
+
+  #gate{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center}
+  #gate input{width:100%;max-width:340px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;margin:14px 0}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:800;font-size:.95rem;border:none;cursor:pointer;font-family:inherit}
+  .btn.on{background:var(--teal);color:#fff}
+  .btn.on:hover{background:#166357}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f0ede4}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  #quiz{display:none}
+  .scoreboard{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin-bottom:18px;font-weight:700;color:var(--navy);font-size:.9rem}
+  .scoreboard .ok{color:var(--teal)}
+  .scoreboard .bad{color:var(--red)}
+
+  .qcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .qtag{display:inline-block;font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px}
+  .qtag.teoria{background:var(--teal-light);color:var(--teal)}
+  .qtag.aplicacion{background:var(--orange-light);color:var(--orange)}
+  .qtext{font-size:1.15rem;color:var(--navy);font-weight:700;margin-bottom:20px}
+
+  .opt{display:block;width:100%;text-align:left;background:#fbfbf9;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px;font-family:inherit;font-size:1rem;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--teal)}
+  .opt.correcta{background:var(--teal-light);border-color:var(--teal);color:var(--navy);font-weight:700}
+  .opt.incorrecta{background:var(--red-light);border-color:var(--red);color:#8a3a2e;font-weight:700}
+  .opt:disabled{cursor:default}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--teal-light);color:#12574c}
+  .feedback.bad{background:var(--red-light);color:#8a3a2e}
+
+  .controls{display:flex;justify-content:flex-end;margin-top:20px}
+
+  .nav-bottom{display:flex;justify-content:space-between;margin-top:28px}
+  @media (max-width:600px){ .wrap{padding:0 16px} }
+  mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="index.html">Portal de Integral definida</a>
+  <span class="sep">·</span>
+  <a href="definida_b3_intro.html">Bloque 3</a>
+  <span class="sep">·</span>
+  <span class="current">Práctica libre</span>
+</header>
+
+<div class="wrap">
+  <div class="titlebar">
+    <span class="kicker">Bloque 3 · Práctica libre</span>
+    <h1>Teorema de la media, teorema fundamental y regla de Barrow</h1>
+    <p>Preguntas aleatorias de teoría y de aplicación del bloque, con la explicación de cada respuesta. Cada vez que entras, el orden cambia. Ten a mano lápiz, papel y la calculadora.</p>
+  </div>
+
+  <div id="gate">
+    <p style="margin:0;color:var(--muted)">Escribe tu nombre para empezar (no hay límite de tiempo ni de intentos):</p>
+    <input type="text" id="nombre" placeholder="Nombre y apellidos">
+    <br>
+    <button class="btn on" onclick="empezar()">Empezar a practicar →</button>
+  </div>
+
+  <div id="quiz">
+    <div class="scoreboard">
+      <span id="contador">Pregunta 1</span>
+      <span><span class="ok" id="okcount">0</span> correctas · <span class="bad" id="badcount">0</span> incorrectas</span>
+    </div>
+
+    <div class="qcard">
+      <span class="qtag" id="qtag">Teoría</span>
+      <div class="qtext" id="qtext">—</div>
+      <div id="opciones"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="controls">
+        <button class="btn on" id="btnSiguiente" onclick="siguiente()" disabled>Siguiente pregunta →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom" style="flex-wrap:wrap;gap:12px">
+    <a class="btn ghost" href="index.html">🏠 Portal</a>
+    <a class="btn ghost" href="definida_b3_intro.html">← Volver a la teoría</a>
+    <a class="btn on" href="https://pepivalenzuela.github.io/panel-matematicas/#panel">Formativas en mi panel →</a>
+    <a class="btn ghost" href="definida_b4_intro.html">Bloque 4 →</a>
+  </div>
+</div>
+
+<script>
+// ---------- Banco de preguntas del bloque
+const BANCO_TEORIA = [
+ {
+  "q": "¿Qué afirma el teorema de la media del cálculo integral (f continua en [a, b])?",
+  "o": [
+   "Existe c con \\(f(c) = \\dfrac{f(a)+f(b)}{2}\\) siempre",
+   "Existe c con f\\'(c) = 0",
+   "Existe c ∈ [a, b] con \\(\\int_a^b f(x)\\,dx = f(c)(b-a)\\)",
+   "\\(\\int_a^b f(x)\\,dx = f(a)+f(b)\\)"
+  ],
+  "c": 2,
+  "e": "El área bajo f coincide con la de un rectángulo de base b − a y altura f(c)."
+ },
+ {
+  "q": "El valor medio de una función continua f en [a, b] es…",
+  "o": [
+   "\\(\\dfrac{f(a)+f(b)}{2}\\)",
+   "\\(\\dfrac{1}{b-a}\\displaystyle\\int_a^b f(x)\\,dx\\)",
+   "\\(\\displaystyle\\int_a^b f(x)\\,dx\\)",
+   "\\(\\dfrac{f(b)-f(a)}{b-a}\\)"
+  ],
+  "c": 1,
+  "e": "Es la altura f(c) del teorema de la media. La última opción es la pendiente media (de derivadas)."
+ },
+ {
+  "q": "Si f es continua y \\(F(x) = \\int_a^x f(t)\\,dt\\), el teorema fundamental del cálculo afirma que…",
+  "o": [
+   "F'(x) = f(a)",
+   "F'(x) = f(x)",
+   "F(x) = f(x)",
+   "f'(x) = F(x)"
+  ],
+  "c": 1,
+  "e": "La función integral es una primitiva de f: derivar «deshace» integrar."
+ },
+ {
+  "q": "¿Qué hipótesis sobre f necesita el teorema fundamental del cálculo?",
+  "o": [
+   "Que f sea continua en [a, b]",
+   "Que f sea un polinomio",
+   "Que f sea derivable dos veces",
+   "Que f sea positiva"
+  ],
+  "c": 0,
+  "e": "Con f continua, F es derivable y F' = f."
+ },
+ {
+  "q": "¿Qué dice la regla de Barrow si G es una primitiva de f, continua en [a, b]?",
+  "o": [
+   "\\(\\int_a^b f(x)\\,dx = G(a)-G(b)\\)",
+   "\\(\\int_a^b f(x)\\,dx = f(b)-f(a)\\)",
+   "\\(\\int_a^b f(x)\\,dx = G(b)+G(a)\\)",
+   "\\(\\int_a^b f(x)\\,dx = G(b)-G(a)\\)"
+  ],
+  "c": 3,
+  "e": "Se evalúa la primitiva en el límite superior y se resta su valor en el inferior."
+ },
+ {
+  "q": "Al aplicar la regla de Barrow, ¿qué primitiva hay que usar?",
+  "o": [
+   "Cualquiera: la constante C se anula al restar",
+   "La que pasa por el origen",
+   "La derivada de f",
+   "Solo la que tiene C = 0, si no sale mal"
+  ],
+  "c": 0,
+  "e": "(G(b) + C) − (G(a) + C) = G(b) − G(a)."
+ },
+ {
+  "q": "Si g es derivable, \\(\\dfrac{d}{dx}\\displaystyle\\int_a^{g(x)} f(t)\\,dt\\) es igual a…",
+  "o": [
+   "f(x)·g'(x)",
+   "f(g(x))",
+   "f(g(x))·g'(x)",
+   "f'(g(x))"
+  ],
+  "c": 2,
+  "e": "Teorema fundamental + regla de la cadena."
+ },
+ {
+  "q": "Si \\(F(x) = \\int_a^x f(t)\\,dt\\), ¿cuánto vale F(a)?",
+  "o": [
+   "1",
+   "f(a)",
+   "0",
+   "a"
+  ],
+  "c": 2,
+  "e": "Es una integral con los dos límites iguales."
+ },
+ {
+  "q": "La demostración de la regla de Barrow se apoya en…",
+  "o": [
+   "El teorema de Bolzano solamente",
+   "El teorema fundamental del cálculo",
+   "El teorema de Pitágoras",
+   "La regla de L'Hôpital"
+  ],
+  "c": 1,
+  "e": "La función integral es una primitiva; dos primitivas se diferencian en una constante, que se halla con F(a) = 0."
+ },
+ {
+  "q": "Geométricamente, el teorema de la media (para f positiva) dice que…",
+  "o": [
+   "La cuerda de a a b es paralela a una tangente",
+   "Hay un rectángulo de base b − a con la misma área que la región bajo f",
+   "La tangente en c es horizontal",
+   "La función corta al eje OX"
+  ],
+  "c": 1,
+  "e": "La altura de ese rectángulo es f(c), el valor medio de f."
+ },
+ {
+  "q": "Si f(x) &gt; 0 para todo x, la función \\(F(x) = \\int_a^x f(t)\\,dt\\) es…",
+  "o": [
+   "Constante",
+   "Negativa",
+   "Decreciente",
+   "Creciente"
+  ],
+  "c": 3,
+  "e": "F'(x) = f(x) &gt; 0, así que F crece."
+ },
+ {
+  "q": "Los posibles extremos relativos de \\(F(x) = \\int_a^x f(t)\\,dt\\) están en los puntos donde…",
+  "o": [
+   "f(x) = 0",
+   "x = a",
+   "F(x) = 0",
+   "f'(x) = 0"
+  ],
+  "c": 0,
+  "e": "Como F'(x) = f(x), los puntos críticos de F son los ceros de f."
+ },
+ {
+  "q": "Si \\(F(x) = \\int_a^x f(t)\\,dt\\) y f es derivable, F\\'\\'(x) es…",
+  "o": [
+   "0",
+   "f(x)",
+   "F'(x)",
+   "f'(x)"
+  ],
+  "c": 3,
+  "e": "F' = f, así que F'' = f'."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\dfrac{d}{dx}\\displaystyle\\int_x^{b} f(t)\\,dt\\) (f continua)?",
+  "o": [
+   "0",
+   "f(x)",
+   "−f(x)",
+   "f(b)"
+  ],
+  "c": 2,
+  "e": "Se cambian los límites: −∫ᵦˣ f(t)dt, cuya derivada es −f(x)."
+ },
+ {
+  "q": "La regla de Barrow relaciona…",
+  "o": [
+   "Las áreas con los perímetros",
+   "Las derivadas con los límites",
+   "La integral definida con las primitivas (integral indefinida)",
+   "La continuidad con la derivabilidad"
+  ],
+  "c": 2,
+  "e": "Gracias a ella, una integral definida se calcula con una primitiva, sin sumas ni límites."
+ },
+ {
+  "q": "¿Por qué se escribe \\(\\int_a^x f(t)\\,dt\\) y no \\(\\int_a^x f(x)\\,dx\\)?",
+  "o": [
+   "Es obligatorio usar siempre la letra t",
+   "Porque así el resultado no depende de x",
+   "Para no confundir la variable de integración con la x del límite superior",
+   "Porque t es el tiempo"
+  ],
+  "c": 2,
+  "e": "x es el extremo variable de la región; t recorre el intervalo [a, x]."
+ }
+];
+
+const BANCO_APLICACION = [
+ {
+  "q": "Aplicando la regla de Barrow, ¿cuánto vale \\(\\displaystyle\\int_1^2 (x^2+3)\\,dx\\)?",
+  "o": [
+   "10/3",
+   "16/3",
+   "7/3",
+   "13/3"
+  ],
+  "c": 1,
+  "e": "\\(\\left[\\frac{x^3}{3}+3x\\right]_1^2 = \\left(\\frac83+6\\right)-\\left(\\frac13+3\\right) = \\frac{16}{3}\\)."
+ },
+ {
+  "q": "¿Cuál es el valor medio de f(x) = x² en el intervalo [0, 3]?",
+  "o": [
+   "4.5",
+   "1.5",
+   "9",
+   "3"
+  ],
+  "c": 3,
+  "e": "∫₀³ x² dx = 9; dividido entre la longitud 3: 9/3 = 3."
+ },
+ {
+  "q": "¿En qué punto c ∈ [0, 3] se cumple el teorema de la media para f(x) = x²?",
+  "o": [
+   "c = √3",
+   "c = 9",
+   "c = 3/2",
+   "c = 3"
+  ],
+  "c": 0,
+  "e": "∫₀³ x² dx = 9 = c²·3 ⇒ c² = 3 ⇒ c = √3 ≈ 1.73."
+ },
+ {
+  "q": "Si \\(F(x) = \\displaystyle\\int_0^x (t^2+5)\\,dt\\), ¿cuánto vale F\\'(2)?",
+  "o": [
+   "5",
+   "26/3",
+   "4",
+   "9"
+  ],
+  "c": 3,
+  "e": "Por el teorema fundamental, F'(x) = x² + 5, luego F'(2) = 9."
+ },
+ {
+  "q": "Si \\(F(x) = \\displaystyle\\int_1^x \\ln t\\,dt\\), ¿cuánto vale F\\'(e)?",
+  "o": [
+   "1",
+   "1/e",
+   "e",
+   "0"
+  ],
+  "c": 0,
+  "e": "F'(x) = ln x, luego F'(e) = ln e = 1."
+ },
+ {
+  "q": "Si \\(F(x) = \\displaystyle\\int_0^{x^2} \\cos t\\,dt\\), ¿cuál es F\\'(x)?",
+  "o": [
+   "\\(2x\\operatorname{sen}(x^2)\\)",
+   "\\(2x\\cos(x^2)\\)",
+   "\\(\\cos x\\)",
+   "\\(\\cos(x^2)\\)"
+  ],
+  "c": 1,
+  "e": "Regla de la cadena: f(g(x))·g'(x) = cos(x²)·2x."
+ },
+ {
+  "q": "¿En qué punto tiene un mínimo relativo \\(F(x) = \\displaystyle\\int_0^x (t-2)e^t\\,dt\\)?",
+  "o": [
+   "x = −2",
+   "No tiene",
+   "x = 2",
+   "x = 0"
+  ],
+  "c": 2,
+  "e": "F'(x) = (x − 2)eˣ: negativa para x &lt; 2 y positiva para x &gt; 2. Pasa de decrecer a crecer en x = 2."
+ },
+ {
+  "q": "¿En qué punto tiene un máximo relativo \\(F(x) = \\displaystyle\\int_0^x (t^2-1)\\,dt\\)?",
+  "o": [
+   "x = 1",
+   "No tiene",
+   "x = 0",
+   "x = −1"
+  ],
+  "c": 3,
+  "e": "F'(x) = x² − 1 se anula en ±1; es positiva antes de −1 y negativa entre −1 y 1: máximo en x = −1."
+ },
+ {
+  "q": "Si \\(f(x) = \\displaystyle\\int_0^x \\cos t\\,\\operatorname{sen}^2 t\\,dt\\), ¿cuánto vale f\\'(π/4)?",
+  "o": [
+   "\\(\\dfrac12\\)",
+   "\\(\\dfrac{\\sqrt2}{4}\\)",
+   "\\(\\dfrac{\\sqrt2}{2}\\)",
+   "\\(\\dfrac{\\sqrt2}{12}\\)"
+  ],
+  "c": 1,
+  "e": "f'(x) = cos x · sen²x; en π/4: (√2/2)·(1/2) = √2/4."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^{\\pi} \\operatorname{sen} x\\,dx\\)?",
+  "o": [
+   "2",
+   "1",
+   "−2",
+   "0"
+  ],
+  "c": 0,
+  "e": "[−cos x]₀^π = −cos π + cos 0 = 1 + 1 = 2."
+ },
+ {
+  "q": "¿Cuál es el valor medio de f(x) = 2x + 1 en [0, 4]?",
+  "o": [
+   "5",
+   "20",
+   "9",
+   "4"
+  ],
+  "c": 0,
+  "e": "∫₀⁴ (2x + 1) dx = [x² + x]₀⁴ = 20; 20/4 = 5."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_1^{e} \\frac{1}{x}\\,dx\\)?",
+  "o": [
+   "e − 1",
+   "1",
+   "e",
+   "0"
+  ],
+  "c": 1,
+  "e": "[ln x]₁ᵉ = ln e − ln 1 = 1 − 0 = 1."
+ },
+ {
+  "q": "G es una primitiva de f con G(1) = 3 y G(4) = 10. ¿Cuánto vale la integral de f entre 1 y 4?",
+  "o": [
+   "−7",
+   "30",
+   "7",
+   "13"
+  ],
+  "c": 2,
+  "e": "Regla de Barrow: G(4) − G(1) = 10 − 3 = 7."
+ },
+ {
+  "q": "Si \\(F(x) = \\displaystyle\\int_2^x \\sqrt{1+t^3}\\,dt\\), ¿cuánto vale F(2)?",
+  "o": [
+   "3",
+   "\\(\\sqrt9\\)",
+   "1",
+   "0"
+  ],
+  "c": 3,
+  "e": "Los límites coinciden: F(2) = ∫₂² … = 0."
+ },
+ {
+  "q": "Si \\(F(x) = \\displaystyle\\int_0^x e^{-t^2}\\,dt\\), ¿cuánto vale F\\'(0)?",
+  "o": [
+   "−1",
+   "e",
+   "1",
+   "0"
+  ],
+  "c": 2,
+  "e": "F'(x) = e^(−x²), luego F'(0) = e⁰ = 1."
+ },
+ {
+  "q": "Si \\(G(x) = \\displaystyle\\int_x^3 t^2\\,dt\\), ¿cuánto vale G\\'(1)?",
+  "o": [
+   "9",
+   "0",
+   "1",
+   "−1"
+  ],
+  "c": 3,
+  "e": "Con x en el límite inferior: G'(x) = −x², así que G'(1) = −1."
+ }
+];
+
+let orden = [];
+let idx = 0;
+let ok = 0, bad = 0;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function empezar(){
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!nombre){ alert('Escribe tu nombre para empezar.'); return; }
+  document.getElementById('gate').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  generarSecuencia();
+  mostrarPregunta();
+}
+
+function generarSecuencia(){
+  const todas = shuffle(
+    BANCO_TEORIA.map(x=>({...x,tipo:'teoria'})).concat(
+    BANCO_APLICACION.map(x=>({...x,tipo:'aplicacion'})))
+  );
+  orden = todas;
+  idx = 0; ok = 0; bad = 0;
+}
+
+function mostrarPregunta(){
+  if(idx >= orden.length){ generarSecuencia(); }
+  const item = orden[idx];
+  document.getElementById('contador').textContent = `Pregunta ${idx+1}`;
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  const tag = document.getElementById('qtag');
+  tag.textContent = item.tipo === 'teoria' ? 'Teoría' : 'Aplicación';
+  tag.className = 'qtag ' + item.tipo;
+  document.getElementById('qtext').innerHTML = item.q;
+
+  const opciones = shuffle(item.o.map((texto,i)=>({texto, esCorrecta:i===item.c})));
+  const cont = document.getElementById('opciones');
+  cont.innerHTML='';
+  opciones.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML = op.texto;
+    btn.onclick = ()=>responder(btn, op.esCorrecta, opciones, cont);
+    cont.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnSiguiente').disabled = true;
+  if(window.MathJax){ MathJax.typesetClear([cont, document.getElementById('qtext')]); MathJax.typesetPromise([cont, document.getElementById('qtext')]); }
+}
+
+function responder(btnPulsado, esCorrecta, opciones, cont){
+  const botones = cont.querySelectorAll('.opt');
+  botones.forEach(b=>b.disabled=true);
+  botones.forEach((b,i)=>{
+    if(opciones[i].esCorrecta) b.classList.add('correcta');
+  });
+  if(!esCorrecta) btnPulsado.classList.add('incorrecta');
+
+  const fb = document.getElementById('feedback');
+  const exp = orden[idx] && orden[idx].e ? '<div style="margin-top:8px;font-weight:400">💡 ' + orden[idx].e + '</div>' : '';
+  if(esCorrecta){
+    ok++;
+    fb.innerHTML = '<b>✓ Correcto.</b>' + exp;
+    fb.className = 'feedback show ok';
+  } else {
+    bad++;
+    fb.innerHTML = '<b>✗ No es correcto. La respuesta correcta está marcada en verde.</b>' + exp;
+    fb.className = 'feedback show bad';
+  }
+  if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise([fb]).catch(()=>{}); }
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  document.getElementById('btnSiguiente').disabled = false;
+}
+
+function siguiente(){
+  idx++;
+  mostrarPregunta();
+}
+</script>
+
+</body>
+</html>

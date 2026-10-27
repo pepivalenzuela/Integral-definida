@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 6 · Práctica — Integral definida · Las Chapas ECOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  :root{
+    --navy:#1a2e4a; --navy-light:#2a4468; --teal:#1d7a6b; --teal-light:#e4f2ef;
+    --orange:#e07b3a; --orange-light:#fdeee0; --cream:#f5f2eb; --ink:#2b2b2b;
+    --muted:#6b6f76; --white:#ffffff; --line:#e4e0d6;
+    --red:#c65b4a; --red-light:#fbeae7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Nunito Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  h1,h2,h3,.brand{font-family:'Nunito',sans-serif}
+  a{color:inherit;text-decoration:none}
+
+  header.top{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;flex-wrap:wrap}
+  header.top a{color:#cfd8e6}
+  header.top a:hover{color:#fff}
+  header.top .sep{color:#5c6b82}
+  header.top .current{color:#fff;font-weight:800}
+
+  .wrap{max-width:720px;margin:0 auto;padding:30px 24px 60px}
+
+  .titlebar{text-align:center;margin-bottom:22px}
+  .titlebar .kicker{display:inline-block;background:var(--teal-light);color:var(--teal);font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:12px}
+  .titlebar h1{font-size:1.6rem;color:var(--navy);margin:0 0 6px;font-weight:900}
+  .titlebar p{color:var(--muted);margin:0;font-size:.95rem}
+
+  #gate{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center}
+  #gate input{width:100%;max-width:340px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;margin:14px 0}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:800;font-size:.95rem;border:none;cursor:pointer;font-family:inherit}
+  .btn.on{background:var(--teal);color:#fff}
+  .btn.on:hover{background:#166357}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f0ede4}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  #quiz{display:none}
+  .scoreboard{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin-bottom:18px;font-weight:700;color:var(--navy);font-size:.9rem}
+  .scoreboard .ok{color:var(--teal)}
+  .scoreboard .bad{color:var(--red)}
+
+  .qcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .qtag{display:inline-block;font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px}
+  .qtag.teoria{background:var(--teal-light);color:var(--teal)}
+  .qtag.aplicacion{background:var(--orange-light);color:var(--orange)}
+  .qtext{font-size:1.15rem;color:var(--navy);font-weight:700;margin-bottom:20px}
+
+  .opt{display:block;width:100%;text-align:left;background:#fbfbf9;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px;font-family:inherit;font-size:1rem;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--teal)}
+  .opt.correcta{background:var(--teal-light);border-color:var(--teal);color:var(--navy);font-weight:700}
+  .opt.incorrecta{background:var(--red-light);border-color:var(--red);color:#8a3a2e;font-weight:700}
+  .opt:disabled{cursor:default}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--teal-light);color:#12574c}
+  .feedback.bad{background:var(--red-light);color:#8a3a2e}
+
+  .controls{display:flex;justify-content:flex-end;margin-top:20px}
+
+  .nav-bottom{display:flex;justify-content:space-between;margin-top:28px}
+  @media (max-width:600px){ .wrap{padding:0 16px} }
+  mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="index.html">Portal de Integral definida</a>
+  <span class="sep">·</span>
+  <a href="definida_b6_intro.html">Bloque 6</a>
+  <span class="sep">·</span>
+  <span class="current">Práctica libre</span>
+</header>
+
+<div class="wrap">
+  <div class="titlebar">
+    <span class="kicker">Bloque 6 · Práctica libre</span>
+    <h1>Área entre dos funciones</h1>
+    <p>Preguntas aleatorias de teoría y de aplicación del bloque, con la explicación de cada respuesta. Cada vez que entras, el orden cambia. Ten a mano lápiz, papel y la calculadora.</p>
+  </div>
+
+  <div id="gate">
+    <p style="margin:0;color:var(--muted)">Escribe tu nombre para empezar (no hay límite de tiempo ni de intentos):</p>
+    <input type="text" id="nombre" placeholder="Nombre y apellidos">
+    <br>
+    <button class="btn on" onclick="empezar()">Empezar a practicar →</button>
+  </div>
+
+  <div id="quiz">
+    <div class="scoreboard">
+      <span id="contador">Pregunta 1</span>
+      <span><span class="ok" id="okcount">0</span> correctas · <span class="bad" id="badcount">0</span> incorrectas</span>
+    </div>
+
+    <div class="qcard">
+      <span class="qtag" id="qtag">Teoría</span>
+      <div class="qtext" id="qtext">—</div>
+      <div id="opciones"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="controls">
+        <button class="btn on" id="btnSiguiente" onclick="siguiente()" disabled>Siguiente pregunta →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom" style="flex-wrap:wrap;gap:12px">
+    <a class="btn ghost" href="index.html">🏠 Portal</a>
+    <a class="btn ghost" href="definida_b6_intro.html">← Volver a la teoría</a>
+    <a class="btn on" href="https://pepivalenzuela.github.io/panel-matematicas/#panel">Formativas en mi panel →</a>
+    <a class="btn ghost" href="definida_b7_intro.html">Bloque 7 →</a>
+  </div>
+</div>
+
+<script>
+// ---------- Banco de preguntas del bloque
+const BANCO_TEORIA = [
+ {
+  "q": "Si f(x) ≥ g(x) en [a, b], el área entre las dos funciones y las rectas x = a, x = b es…",
+  "o": [
+   "\\(\\int_a^b \\big(f(x)+g(x)\\big)\\,dx\\)",
+   "\\(\\int_a^b \\big(f(x)-g(x)\\big)\\,dx\\)",
+   "\\(\\int_a^b \\big(g(x)-f(x)\\big)\\,dx\\)",
+   "\\(\\int_a^b f(x)\\,dx\\cdot\\int_a^b g(x)\\,dx\\)"
+  ],
+  "c": 1,
+  "e": "Es el área bajo la función diferencia: la de arriba menos la de abajo."
+ },
+ {
+  "q": "¿Cómo se hallan los puntos donde se cortan dos funciones f y g?",
+  "o": [
+   "Resolviendo f(x) = 0",
+   "Resolviendo f'(x) = g'(x)",
+   "Sumando f y g",
+   "Resolviendo la ecuación f(x) = g(x)"
+  ],
+  "c": 3,
+  "e": "En los puntos de corte las dos funciones toman el mismo valor."
+ },
+ {
+  "q": "Para el área entre dos funciones, ¿importa que estén por encima o por debajo del eje OX?",
+  "o": [
+   "Sí: hay que tomar siempre el valor absoluto de cada una",
+   "Sí: si están debajo, el área es negativa",
+   "No: solo importa cuál va arriba",
+   "Solo si se cortan en el eje"
+  ],
+  "c": 2,
+  "e": "La diferencia f − g es la misma aunque traslademos las dos funciones hacia arriba o hacia abajo."
+ },
+ {
+  "q": "¿Cómo se sabe cuál de las dos funciones va arriba en un intervalo?",
+  "o": [
+   "Evaluando las dos en un punto del intervalo y comparando",
+   "La que tiene término independiente mayor",
+   "La que corta antes al eje OY",
+   "La de mayor grado va siempre arriba"
+  ],
+  "c": 0,
+  "e": "Entre dos cortes consecutivos, el orden de las funciones no cambia."
+ },
+ {
+  "q": "Si f y g se cruzan dentro de [a, b], para calcular el área…",
+  "o": [
+   "Se elige la función mayor en a",
+   "Se divide en los puntos de corte y se suman las áreas de cada trozo",
+   "No se puede calcular",
+   "Se calcula una única integral de f − g"
+  ],
+  "c": 1,
+  "e": "En cada trozo cambia la función que va arriba."
+ },
+ {
+  "q": "Si no sabes cuál de las dos funciones va arriba en un trozo, puedes calcular…",
+  "o": [
+   "\\(\\left|\\int_a^b f\\,dx\\right|+\\left|\\int_a^b g\\,dx\\right|\\)",
+   "\\(\\int_a^b f\\,dx\\)",
+   "\\(\\left|\\int_a^b (f-g)\\,dx\\right|\\)",
+   "\\(\\int_a^b (f-g)\\,dx\\) sin más"
+  ],
+  "c": 2,
+  "e": "Si te equivocas de orden, solo cambia el signo; el valor absoluto lo arregla (siempre que no se crucen en ese trozo)."
+ },
+ {
+  "q": "Si f y g se cortan en c ∈ (a, b) y calculas \\(\\int_a^b (f-g)\\,dx\\) de una vez…",
+  "o": [
+   "Obtienes siempre 0",
+   "Obtienes el doble del área",
+   "Obtienes una diferencia de áreas, no el área total",
+   "Obtienes el área total"
+  ],
+  "c": 2,
+  "e": "El trozo donde g va arriba resta en lugar de sumar."
+ },
+ {
+  "q": "El área entre una función f y el eje OX es un caso particular del área entre dos funciones con…",
+  "o": [
+   "g(x) = 0",
+   "g(x) = 1",
+   "g(x) = x",
+   "g(x) = f(x)"
+  ],
+  "c": 0,
+  "e": "El eje OX es la recta y = 0."
+ },
+ {
+  "q": "Si a las dos funciones f y g les sumamos la misma constante k, el área entre ellas…",
+  "o": [
+   "Aumenta en k",
+   "No cambia",
+   "Se multiplica por k",
+   "Cambia de signo"
+  ],
+  "c": 1,
+  "e": "(f + k) − (g + k) = f − g."
+ },
+ {
+  "q": "Si la región entre dos funciones es simétrica respecto al eje OY, se puede calcular…",
+  "o": [
+   "El área de la mitad y dividir entre 2",
+   "Solo el área de la mitad derecha",
+   "Una integral entre −∞ e ∞",
+   "El área de la mitad derecha y multiplicar por 2"
+  ],
+  "c": 3,
+  "e": "Es la estrategia del ejemplo de las tres funciones (70/3)."
+ },
+ {
+  "q": "Los límites de integración para el área encerrada entre y = x² e y = x son…",
+  "o": [
+   "−1 y 1",
+   "0 y 1",
+   "1 y 2",
+   "0 y 2"
+  ],
+  "c": 1,
+  "e": "x² = x ⇒ x(x − 1) = 0 ⇒ x = 0, x = 1."
+ },
+ {
+  "q": "Si una región está limitada por tres funciones, normalmente…",
+  "o": [
+   "Hay que hallar los tres puntos de corte y dividir el recinto en trozos",
+   "No se puede calcular con integrales",
+   "Se ignora la tercera función",
+   "Basta con una integral de la suma de las tres"
+  ],
+  "c": 0,
+  "e": "En cada trozo la función de arriba o la de abajo puede ser distinta."
+ },
+ {
+  "q": "Para el área entre y = e^(x − 1), y = e^(1 − x) y el eje OY, los límites son…",
+  "o": [
+   "x = 0 y x = e",
+   "x = 1 y x = e",
+   "x = −1 y x = 1",
+   "x = 0 (eje OY) y x = 1 (corte de las curvas)"
+  ],
+  "c": 3,
+  "e": "El eje OY es x = 0; las curvas se cortan donde x − 1 = 1 − x, x = 1."
+ },
+ {
+  "q": "En el área entre dos funciones, el integrando f(x) − g(x) representa…",
+  "o": [
+   "La altura de cada rectángulo vertical entre las dos curvas",
+   "La suma de las alturas de las dos curvas",
+   "La pendiente de la recta que las une",
+   "La distancia al eje OX"
+  ],
+  "c": 0,
+  "e": "Cada rectángulo va desde la curva de abajo hasta la de arriba."
+ },
+ {
+  "q": "Para hallar un parámetro sabiendo el área entre dos funciones…",
+  "o": [
+   "Se suma el parámetro al área",
+   "Se igualan las dos funciones al valor dado",
+   "Se deriva el área",
+   "Se calcula el área en función del parámetro y se iguala al valor dado"
+  ],
+  "c": 3,
+  "e": "Por ejemplo, 8β³/3 = 72 ⇒ β = 3."
+ },
+ {
+  "q": "Si f(x) ≥ g(x) en [a, b], ¿puede ser negativa la integral de f − g en [a, b]?",
+  "o": [
+   "Sí, si las dos funciones son negativas",
+   "Siempre es negativa",
+   "No, porque f − g ≥ 0",
+   "Sí, si a &lt; 0"
+  ],
+  "c": 2,
+  "e": "Por la monotonía de la integral, si el integrando es no negativo la integral también lo es."
+ }
+];
+
+const BANCO_APLICACION = [
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = x² e y = x + 2?",
+  "o": [
+   "10/3 u²",
+   "9/2 u²",
+   "7/6 u²",
+   "8/3 u²"
+  ],
+  "c": 1,
+  "e": "Cortes en −1 y 2; arriba la recta: ∫₋₁² (x + 2 − x²) dx = 9/2."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = x² e y = x?",
+  "o": [
+   "1/2 u²",
+   "1/3 u²",
+   "1/6 u²",
+   "5/6 u²"
+  ],
+  "c": 2,
+  "e": "Cortes en 0 y 1; arriba la recta: ∫₀¹ (x − x²) dx = 1/2 − 1/3 = 1/6."
+ },
+ {
+  "q": "¿Cuál es el área limitada por el eje OY y las gráficas de f(x) = e^(x − 1) y g(x) = e^(1 − x)?",
+  "o": [
+   "\\(e-1\\) u²",
+   "\\(2-\\dfrac1e\\) u²",
+   "\\(e-\\dfrac1e\\) u²",
+   "\\(e+\\dfrac1e-2\\) u²"
+  ],
+  "c": 3,
+  "e": "Se cortan en x = 1; arriba g: [−e^(1−x) − e^(x−1)]₀¹ = −2 + e + 1/e ≈ 1.086."
+ },
+ {
+  "q": "¿Cuál es el área limitada por f(x) = 5x²/4, g(x) = (5x + 20)/2 y h(x) = (−5x + 20)/2?",
+  "o": [
+   "35/3 u²",
+   "40/3 u²",
+   "20 u²",
+   "70/3 u²"
+  ],
+  "c": 3,
+  "e": "Cortes P(−2, 5), Q(2, 5), R(0, 10); por simetría: 2∫₀² ((−5x + 20)/2 − 5x²/4) dx = 70/3."
+ },
+ {
+  "q": "El área limitada por f(x) = x² y g(x) = −x² + 2β² (β &gt; 0) es 72. ¿Cuánto vale β?",
+  "o": [
+   "6",
+   "√3",
+   "3",
+   "27"
+  ],
+  "c": 2,
+  "e": "Cortes en ±β; área = ∫₋β^β (2β² − 2x²) dx = 8β³/3 = 72 ⇒ β³ = 27 ⇒ β = 3."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = x² e y = 8 − x²?",
+  "o": [
+   "128/3 u²",
+   "16 u²",
+   "64/3 u²",
+   "32/3 u²"
+  ],
+  "c": 2,
+  "e": "Cortes en ±2; arriba 8 − x²: ∫₋₂² (8 − 2x²) dx = 32 − 32/3 = 64/3."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = x² y la recta y = 4?",
+  "o": [
+   "8 u²",
+   "32/3 u²",
+   "16/3 u²",
+   "16 u²"
+  ],
+  "c": 1,
+  "e": "Cortes en ±2: ∫₋₂² (4 − x²) dx = 16 − 16/3 = 32/3."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = x³ e y = x?",
+  "o": [
+   "1/2 u²",
+   "1 u²",
+   "1/4 u²",
+   "0 u²"
+  ],
+  "c": 0,
+  "e": "Cortes en −1, 0, 1. En (0, 1) va arriba x y en (−1, 0) va arriba x³: 1/4 + 1/4 = 1/2."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = √x e y = x?",
+  "o": [
+   "2/3 u²",
+   "1/6 u²",
+   "1/2 u²",
+   "1/3 u²"
+  ],
+  "c": 1,
+  "e": "Cortes en 0 y 1; arriba √x: [2x√x/3 − x²/2]₀¹ = 2/3 − 1/2 = 1/6."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = x² − 2x e y = x?",
+  "o": [
+   "3/2 u²",
+   "9 u²",
+   "27/2 u²",
+   "9/2 u²"
+  ],
+  "c": 3,
+  "e": "x² − 2x = x ⇒ x = 0, 3; arriba la recta: ∫₀³ (3x − x²) dx = 27/2 − 9 = 9/2."
+ },
+ {
+  "q": "¿Cuál es el área entre y = cos x e y = sen x para x entre 0 y π/4?",
+  "o": [
+   "\\(\\dfrac{\\sqrt2}{2}\\) u²",
+   "\\(\\sqrt2-1\\) u²",
+   "\\(1\\) u²",
+   "\\(\\sqrt2\\) u²"
+  ],
+  "c": 1,
+  "e": "En (0, π/4) va arriba el coseno: [sen x + cos x]₀^(π/4) = √2 − 1."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = x² e y = 2 − x²?",
+  "o": [
+   "8/3 u²",
+   "4/3 u²",
+   "2 u²",
+   "4 u²"
+  ],
+  "c": 0,
+  "e": "Cortes en ±1: ∫₋₁¹ (2 − 2x²) dx = 4 − 4/3 = 8/3."
+ },
+ {
+  "q": "¿Cuál es el área del recinto limitado por y = 4 − x² e y = x + 2?",
+  "o": [
+   "9/2 u²",
+   "7/6 u²",
+   "27/2 u²",
+   "10/3 u²"
+  ],
+  "c": 0,
+  "e": "4 − x² = x + 2 ⇒ x = −2, 1; arriba la parábola: ∫₋₂¹ (2 − x − x²) dx = 9/2."
+ },
+ {
+  "q": "¿Cuál es el área limitada por y = eˣ, la recta y = 1 y la recta x = 1?",
+  "o": [
+   "e − 1 u²",
+   "e − 2 u²",
+   "1 u²",
+   "e u²"
+  ],
+  "c": 1,
+  "e": "eˣ = 1 en x = 0; arriba eˣ: ∫₀¹ (eˣ − 1) dx = e − 1 − 1 = e − 2."
+ },
+ {
+  "q": "¿En qué puntos se cortan las gráficas de y = x² e y = x + 2?",
+  "o": [
+   "x = 0 y x = 2",
+   "x = −2 y x = 2",
+   "x = 1 y x = −2",
+   "x = −1 y x = 2"
+  ],
+  "c": 3,
+  "e": "x² − x − 2 = 0 ⇒ x = (1 ± 3)/2 ⇒ x = 2, x = −1."
+ },
+ {
+  "q": "El área encerrada por y = x² y la recta y = kx (k &gt; 0) es 36. ¿Cuánto vale k?",
+  "o": [
+   "6",
+   "36",
+   "3",
+   "216"
+  ],
+  "c": 0,
+  "e": "Cortes en 0 y k: ∫₀ᵏ (kx − x²) dx = k³/2 − k³/3 = k³/6 = 36 ⇒ k³ = 216 ⇒ k = 6."
+ }
+];
+
+let orden = [];
+let idx = 0;
+let ok = 0, bad = 0;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function empezar(){
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!nombre){ alert('Escribe tu nombre para empezar.'); return; }
+  document.getElementById('gate').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  generarSecuencia();
+  mostrarPregunta();
+}
+
+function generarSecuencia(){
+  const todas = shuffle(
+    BANCO_TEORIA.map(x=>({...x,tipo:'teoria'})).concat(
+    BANCO_APLICACION.map(x=>({...x,tipo:'aplicacion'})))
+  );
+  orden = todas;
+  idx = 0; ok = 0; bad = 0;
+}
+
+function mostrarPregunta(){
+  if(idx >= orden.length){ generarSecuencia(); }
+  const item = orden[idx];
+  document.getElementById('contador').textContent = `Pregunta ${idx+1}`;
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  const tag = document.getElementById('qtag');
+  tag.textContent = item.tipo === 'teoria' ? 'Teoría' : 'Aplicación';
+  tag.className = 'qtag ' + item.tipo;
+  document.getElementById('qtext').innerHTML = item.q;
+
+  const opciones = shuffle(item.o.map((texto,i)=>({texto, esCorrecta:i===item.c})));
+  const cont = document.getElementById('opciones');
+  cont.innerHTML='';
+  opciones.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML = op.texto;
+    btn.onclick = ()=>responder(btn, op.esCorrecta, opciones, cont);
+    cont.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnSiguiente').disabled = true;
+  if(window.MathJax){ MathJax.typesetClear([cont, document.getElementById('qtext')]); MathJax.typesetPromise([cont, document.getElementById('qtext')]); }
+}
+
+function responder(btnPulsado, esCorrecta, opciones, cont){
+  const botones = cont.querySelectorAll('.opt');
+  botones.forEach(b=>b.disabled=true);
+  botones.forEach((b,i)=>{
+    if(opciones[i].esCorrecta) b.classList.add('correcta');
+  });
+  if(!esCorrecta) btnPulsado.classList.add('incorrecta');
+
+  const fb = document.getElementById('feedback');
+  const exp = orden[idx] && orden[idx].e ? '<div style="margin-top:8px;font-weight:400">💡 ' + orden[idx].e + '</div>' : '';
+  if(esCorrecta){
+    ok++;
+    fb.innerHTML = '<b>✓ Correcto.</b>' + exp;
+    fb.className = 'feedback show ok';
+  } else {
+    bad++;
+    fb.innerHTML = '<b>✗ No es correcto. La respuesta correcta está marcada en verde.</b>' + exp;
+    fb.className = 'feedback show bad';
+  }
+  if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise([fb]).catch(()=>{}); }
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  document.getElementById('btnSiguiente').disabled = false;
+}
+
+function siguiente(){
+  idx++;
+  mostrarPregunta();
+}
+</script>
+
+</body>
+</html>

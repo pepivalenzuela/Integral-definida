@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 7 · Práctica — Integral definida · Las Chapas ECOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  :root{
+    --navy:#1a2e4a; --navy-light:#2a4468; --teal:#1d7a6b; --teal-light:#e4f2ef;
+    --orange:#e07b3a; --orange-light:#fdeee0; --cream:#f5f2eb; --ink:#2b2b2b;
+    --muted:#6b6f76; --white:#ffffff; --line:#e4e0d6;
+    --red:#c65b4a; --red-light:#fbeae7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Nunito Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  h1,h2,h3,.brand{font-family:'Nunito',sans-serif}
+  a{color:inherit;text-decoration:none}
+
+  header.top{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;flex-wrap:wrap}
+  header.top a{color:#cfd8e6}
+  header.top a:hover{color:#fff}
+  header.top .sep{color:#5c6b82}
+  header.top .current{color:#fff;font-weight:800}
+
+  .wrap{max-width:720px;margin:0 auto;padding:30px 24px 60px}
+
+  .titlebar{text-align:center;margin-bottom:22px}
+  .titlebar .kicker{display:inline-block;background:var(--teal-light);color:var(--teal);font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:12px}
+  .titlebar h1{font-size:1.6rem;color:var(--navy);margin:0 0 6px;font-weight:900}
+  .titlebar p{color:var(--muted);margin:0;font-size:.95rem}
+
+  #gate{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center}
+  #gate input{width:100%;max-width:340px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;margin:14px 0}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:800;font-size:.95rem;border:none;cursor:pointer;font-family:inherit}
+  .btn.on{background:var(--teal);color:#fff}
+  .btn.on:hover{background:#166357}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f0ede4}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  #quiz{display:none}
+  .scoreboard{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin-bottom:18px;font-weight:700;color:var(--navy);font-size:.9rem}
+  .scoreboard .ok{color:var(--teal)}
+  .scoreboard .bad{color:var(--red)}
+
+  .qcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .qtag{display:inline-block;font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px}
+  .qtag.teoria{background:var(--teal-light);color:var(--teal)}
+  .qtag.aplicacion{background:var(--orange-light);color:var(--orange)}
+  .qtext{font-size:1.15rem;color:var(--navy);font-weight:700;margin-bottom:20px}
+
+  .opt{display:block;width:100%;text-align:left;background:#fbfbf9;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px;font-family:inherit;font-size:1rem;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--teal)}
+  .opt.correcta{background:var(--teal-light);border-color:var(--teal);color:var(--navy);font-weight:700}
+  .opt.incorrecta{background:var(--red-light);border-color:var(--red);color:#8a3a2e;font-weight:700}
+  .opt:disabled{cursor:default}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--teal-light);color:#12574c}
+  .feedback.bad{background:var(--red-light);color:#8a3a2e}
+
+  .controls{display:flex;justify-content:flex-end;margin-top:20px}
+
+  .nav-bottom{display:flex;justify-content:space-between;margin-top:28px}
+  @media (max-width:600px){ .wrap{padding:0 16px} }
+  mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="index.html">Portal de Integral definida</a>
+  <span class="sep">·</span>
+  <a href="definida_b7_intro.html">Bloque 7</a>
+  <span class="sep">·</span>
+  <span class="current">Práctica libre</span>
+</header>
+
+<div class="wrap">
+  <div class="titlebar">
+    <span class="kicker">Bloque 7 · Práctica libre</span>
+    <h1>Volúmenes de revolución</h1>
+    <p>Preguntas aleatorias de teoría y de aplicación del bloque, con la explicación de cada respuesta. Cada vez que entras, el orden cambia. Ten a mano lápiz, papel y la calculadora.</p>
+  </div>
+
+  <div id="gate">
+    <p style="margin:0;color:var(--muted)">Escribe tu nombre para empezar (no hay límite de tiempo ni de intentos):</p>
+    <input type="text" id="nombre" placeholder="Nombre y apellidos">
+    <br>
+    <button class="btn on" onclick="empezar()">Empezar a practicar →</button>
+  </div>
+
+  <div id="quiz">
+    <div class="scoreboard">
+      <span id="contador">Pregunta 1</span>
+      <span><span class="ok" id="okcount">0</span> correctas · <span class="bad" id="badcount">0</span> incorrectas</span>
+    </div>
+
+    <div class="qcard">
+      <span class="qtag" id="qtag">Teoría</span>
+      <div class="qtext" id="qtext">—</div>
+      <div id="opciones"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="controls">
+        <button class="btn on" id="btnSiguiente" onclick="siguiente()" disabled>Siguiente pregunta →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom" style="flex-wrap:wrap;gap:12px">
+    <a class="btn ghost" href="index.html">🏠 Portal</a>
+    <a class="btn ghost" href="definida_b7_intro.html">← Volver a la teoría</a>
+    <a class="btn on" href="https://pepivalenzuela.github.io/panel-matematicas/#panel">Formativas en mi panel →</a>
+    
+  </div>
+</div>
+
+<script>
+// ---------- Banco de preguntas del bloque
+const BANCO_TEORIA = [
+ {
+  "q": "¿Qué fórmula da el volumen del sólido que se obtiene al girar y = f(x), a ≤ x ≤ b, alrededor del eje OX?",
+  "o": [
+   "\\(V = \\pi\\left(\\int_a^b f(x)\\,dx\\right)^2\\)",
+   "\\(V = 2\\pi\\int_a^b f(x)\\,dx\\)",
+   "\\(V = \\int_a^b f(x)\\,dx\\)",
+   "\\(V = \\pi\\int_a^b f(x)^2\\,dx\\)"
+  ],
+  "c": 3,
+  "e": "Es la suma de infinitos discos de radio f(x) y grosor dx."
+ },
+ {
+  "q": "Al girar alrededor de OX un rectángulo de base Δx y altura f(x), se obtiene…",
+  "o": [
+   "Una esfera de radio f(x)",
+   "Un cono de altura Δx",
+   "Un disco (cilindro fino) de radio f(x) y grosor Δx",
+   "Un cuadrado de lado f(x)"
+  ],
+  "c": 2,
+  "e": "Su volumen es π·f(x)²·Δx."
+ },
+ {
+  "q": "¿Por qué aparece f(x) al cuadrado en la fórmula del volumen?",
+  "o": [
+   "Porque el área de cada disco es π·r² con r = f(x)",
+   "Para que el resultado sea positivo, sin otra razón",
+   "Por error de notación",
+   "Porque el volumen es siempre un cuadrado"
+  ],
+  "c": 0,
+  "e": "El volumen de cada disco es (área del círculo)·(grosor)."
+ },
+ {
+  "q": "Si la región está entre f (arriba) y g (abajo), ambas ≥ 0, el volumen al girar alrededor de OX es…",
+  "o": [
+   "\\(\\pi\\int_a^b \\big(f(x)^2-g(x)^2\\big)\\,dx\\)",
+   "\\(\\pi\\int_a^b \\big(f(x)-g(x)\\big)^2\\,dx\\)",
+   "\\(\\int_a^b \\big(f(x)-g(x)\\big)\\,dx\\)",
+   "\\(\\pi\\int_a^b f(x)^2\\,dx\\)"
+  ],
+  "c": 0,
+  "e": "Al volumen del sólido grande se le resta el del hueco."
+ },
+ {
+  "q": "¿Qué figura se obtiene al girar alrededor de OX el segmento y = x, 0 ≤ x ≤ h?",
+  "o": [
+   "Un cilindro",
+   "Un paraboloide",
+   "Un cono",
+   "Una esfera"
+  ],
+  "c": 2,
+  "e": "El radio crece linealmente desde 0 hasta h."
+ },
+ {
+  "q": "¿Qué figura se obtiene al girar alrededor de OX la recta horizontal y = r, 0 ≤ x ≤ h?",
+  "o": [
+   "Una esfera de radio r",
+   "Un disco plano",
+   "Un cono",
+   "Un cilindro de radio r y altura h"
+  ],
+  "c": 3,
+  "e": "V = π∫₀ʰ r² dx = πr²h."
+ },
+ {
+  "q": "¿Qué figura se obtiene al girar alrededor de OX la curva \\(y=\\sqrt{r^2-x^2}\\), −r ≤ x ≤ r?",
+  "o": [
+   "Una esfera de radio r",
+   "Un toro (rosquilla)",
+   "Un cono",
+   "Un cilindro"
+  ],
+  "c": 0,
+  "e": "Es la semicircunferencia superior de radio r."
+ },
+ {
+  "q": "¿En qué unidades se expresa un volumen?",
+  "o": [
+   "Unidades (u)",
+   "Unidades cuadradas (u²)",
+   "Unidades cúbicas (u³)",
+   "Radianes"
+  ],
+  "c": 2,
+  "e": "Área del disco (u²) por grosor (u)."
+ },
+ {
+  "q": "Si f es negativa en parte del intervalo, ¿hay que partir la integral del volumen como en las áreas?",
+  "o": [
+   "No se puede calcular el volumen",
+   "No: f(x)² es siempre positivo",
+   "Sí, siempre",
+   "Sí, y tomar el valor absoluto"
+  ],
+  "c": 1,
+  "e": "Al girar, el sólido es el mismo para f que para −f."
+ },
+ {
+  "q": "La fórmula del volumen de revolución se obtiene, igual que el área, como…",
+  "o": [
+   "Producto del área por 2π",
+   "Derivada del área",
+   "Límite de una suma de discos cada vez más finos",
+   "Suma de rectángulos sin límite"
+  ],
+  "c": 2,
+  "e": "Es la misma idea de Riemann: partición, suma y límite."
+ },
+ {
+  "q": "¿Cuál es la fórmula del volumen de un cono de radio r y altura h?",
+  "o": [
+   "\\(\\dfrac43\\pi r^3\\)",
+   "\\(\\pi r^2 h\\)",
+   "\\(\\dfrac13\\pi r^2 h\\)",
+   "\\(\\pi r h\\)"
+  ],
+  "c": 2,
+  "e": "Sale de π∫₀ʰ (rx/h)² dx."
+ },
+ {
+  "q": "¿Cuál es la fórmula del volumen de una esfera de radio r?",
+  "o": [
+   "\\(\\pi r^3\\)",
+   "\\(\\dfrac43\\pi r^3\\)",
+   "\\(4\\pi r^2\\)",
+   "\\(\\dfrac13\\pi r^3\\)"
+  ],
+  "c": 1,
+  "e": "Sale de π∫₋ᵣʳ (r² − x²) dx."
+ },
+ {
+  "q": "Al girar la región entre √x y x (0 ≤ x ≤ 1) alrededor de OX, cada sección es…",
+  "o": [
+   "Una arandela (corona circular)",
+   "Un cuadrado",
+   "Un triángulo",
+   "Un disco macizo"
+  ],
+  "c": 0,
+  "e": "El radio exterior es √x y el interior x."
+ },
+ {
+  "q": "¿Es correcto calcular el volumen entre f y g como \\(\\pi\\int_a^b (f-g)^2\\,dx\\)?",
+  "o": [
+   "Sí, si f &gt; g",
+   "Solo si g = 0",
+   "No, hay que restar los cuadrados: π∫(f² − g²)",
+   "Sí, es la fórmula correcta"
+  ],
+  "c": 2,
+  "e": "(f − g)² ≠ f² − g²: el primero sería el volumen de girar f − g, que es otro sólido."
+ },
+ {
+  "q": "Para el volumen de revolución, los límites de integración son…",
+  "o": [
+   "Los extremos del intervalo de x que limita la región que gira",
+   "Siempre 0 y 2π",
+   "Los radios del sólido",
+   "0 y el radio máximo"
+  ],
+  "c": 0,
+  "e": "Se integra a lo largo del eje de giro, el eje OX."
+ },
+ {
+  "q": "En la fórmula V = π∫f(x)²dx, el sólido se obtiene al girar alrededor de…",
+  "o": [
+   "El eje OY",
+   "El eje OX",
+   "La recta y = x",
+   "Cualquier recta"
+  ],
+  "c": 1,
+  "e": "En este curso giramos alrededor del eje de abscisas."
+ }
+];
+
+const BANCO_APLICACION = [
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la recta y = x entre x = 0 y x = 1?",
+  "o": [
+   "1/3 u³",
+   "π/2 u³",
+   "π/3 u³",
+   "π u³"
+  ],
+  "c": 2,
+  "e": "π∫₀¹ x² dx = π/3: es un cono de radio 1 y altura 1."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la región entre y = √x, 0 ≤ x ≤ 25, y el eje X?",
+  "o": [
+   "625π u³",
+   "250π/3 u³",
+   "625π/2 u³",
+   "25π/2 u³"
+  ],
+  "c": 2,
+  "e": "π∫₀²⁵ x dx = π·625/2."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la región entre y = sen x y el eje OX, 0 ≤ x ≤ π?",
+  "o": [
+   "π²/4 u³",
+   "π u³",
+   "2π u³",
+   "π²/2 u³"
+  ],
+  "c": 3,
+  "e": "\\(\\pi\\int_0^\\pi \\operatorname{sen}^2x\\,dx = \\pi\\cdot\\frac{\\pi}{2}\\)."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la región entre y = √x e y = x?",
+  "o": [
+   "π/3 u³",
+   "π/2 u³",
+   "π/30 u³",
+   "π/6 u³"
+  ],
+  "c": 3,
+  "e": "π∫₀¹ (x − x²) dx = π(1/2 − 1/3) = π/6."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la curva \\(y=\\sqrt{9-x^2}\\), −3 ≤ x ≤ 3?",
+  "o": [
+   "27π u³",
+   "9π u³",
+   "36π u³",
+   "108π u³"
+  ],
+  "c": 2,
+  "e": "Es una esfera de radio 3: (4/3)π·27 = 36π."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la recta y = 2 entre x = 0 y x = 5?",
+  "o": [
+   "50π u³",
+   "20π u³",
+   "10π u³",
+   "4π u³"
+  ],
+  "c": 1,
+  "e": "Es un cilindro: π∫₀⁵ 4 dx = 20π."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la curva y = x² entre x = 0 y x = 1?",
+  "o": [
+   "π/5 u³",
+   "π/4 u³",
+   "π/3 u³",
+   "π u³"
+  ],
+  "c": 0,
+  "e": "π∫₀¹ x⁴ dx = π/5."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la curva y = √x entre x = 0 y x = 4?",
+  "o": [
+   "8π u³",
+   "16π/3 u³",
+   "4π u³",
+   "16π u³"
+  ],
+  "c": 0,
+  "e": "π∫₀⁴ x dx = π·16/2 = 8π."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la recta y = x/2 entre x = 0 y x = 4?",
+  "o": [
+   "8π u³",
+   "64π/3 u³",
+   "4π/3 u³",
+   "16π/3 u³"
+  ],
+  "c": 3,
+  "e": "π∫₀⁴ x²/4 dx = π·64/12 = 16π/3. Es un cono de radio 2 y altura 4."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la curva y = eˣ entre x = 0 y x = 1?",
+  "o": [
+   "\\(\\pi(e-1)\\) u³",
+   "\\(\\dfrac{\\pi e^2}{2}\\) u³",
+   "\\(\\dfrac{\\pi(e^2-1)}{2}\\) u³",
+   "\\(\\pi(e^2-1)\\) u³"
+  ],
+  "c": 2,
+  "e": "\\(\\pi\\int_0^1 e^{2x}\\,dx = \\pi\\left[\\frac{e^{2x}}{2}\\right]_0^1\\)."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la curva y = 1/x entre x = 1 y x = 2?",
+  "o": [
+   "π u³",
+   "π/2 u³",
+   "π/4 u³",
+   "π ln 2 u³"
+  ],
+  "c": 1,
+  "e": "π∫₁² 1/x² dx = π[−1/x]₁² = π/2."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la curva \\(y=\\sqrt{4-x^2}\\), −2 ≤ x ≤ 2?",
+  "o": [
+   "8π u³",
+   "16π/3 u³",
+   "32π/3 u³",
+   "4π u³"
+  ],
+  "c": 2,
+  "e": "Es una esfera de radio 2: (4/3)π·8 = 32π/3."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la recta y = x + 1 entre x = 0 y x = 2?",
+  "o": [
+   "4π u³",
+   "9π u³",
+   "26π/3 u³",
+   "8π/3 u³"
+  ],
+  "c": 2,
+  "e": "π∫₀² (x + 1)² dx = π[(x + 1)³/3]₀² = π(27 − 1)/3 = 26π/3 (un tronco de cono)."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la región entre y = x e y = x²?",
+  "o": [
+   "π/30 u³",
+   "π/6 u³",
+   "π/15 u³",
+   "2π/15 u³"
+  ],
+  "c": 3,
+  "e": "Arriba va x: π∫₀¹ (x² − x⁴) dx = π(1/3 − 1/5) = 2π/15. (Con π∫(x − x²)² saldría π/30, que es incorrecto.)"
+ },
+ {
+  "q": "Al girar alrededor de OX la curva y = √x entre x = 0 y x = a se obtiene un volumen de 8π. ¿Cuánto vale a?",
+  "o": [
+   "8",
+   "2",
+   "4",
+   "16"
+  ],
+  "c": 2,
+  "e": "π∫₀ᵃ x dx = πa²/2 = 8π ⇒ a² = 16 ⇒ a = 4."
+ },
+ {
+  "q": "¿Cuál es el volumen al girar alrededor de OX la curva y = cos x entre x = 0 y x = π/2?",
+  "o": [
+   "π u³",
+   "π²/2 u³",
+   "π²/4 u³",
+   "π/2 u³"
+  ],
+  "c": 2,
+  "e": "\\(\\pi\\int_0^{\\pi/2}\\cos^2x\\,dx = \\pi\\cdot\\frac{\\pi}{4}\\)."
+ }
+];
+
+let orden = [];
+let idx = 0;
+let ok = 0, bad = 0;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function empezar(){
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!nombre){ alert('Escribe tu nombre para empezar.'); return; }
+  document.getElementById('gate').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  generarSecuencia();
+  mostrarPregunta();
+}
+
+function generarSecuencia(){
+  const todas = shuffle(
+    BANCO_TEORIA.map(x=>({...x,tipo:'teoria'})).concat(
+    BANCO_APLICACION.map(x=>({...x,tipo:'aplicacion'})))
+  );
+  orden = todas;
+  idx = 0; ok = 0; bad = 0;
+}
+
+function mostrarPregunta(){
+  if(idx >= orden.length){ generarSecuencia(); }
+  const item = orden[idx];
+  document.getElementById('contador').textContent = `Pregunta ${idx+1}`;
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  const tag = document.getElementById('qtag');
+  tag.textContent = item.tipo === 'teoria' ? 'Teoría' : 'Aplicación';
+  tag.className = 'qtag ' + item.tipo;
+  document.getElementById('qtext').innerHTML = item.q;
+
+  const opciones = shuffle(item.o.map((texto,i)=>({texto, esCorrecta:i===item.c})));
+  const cont = document.getElementById('opciones');
+  cont.innerHTML='';
+  opciones.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML = op.texto;
+    btn.onclick = ()=>responder(btn, op.esCorrecta, opciones, cont);
+    cont.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnSiguiente').disabled = true;
+  if(window.MathJax){ MathJax.typesetClear([cont, document.getElementById('qtext')]); MathJax.typesetPromise([cont, document.getElementById('qtext')]); }
+}
+
+function responder(btnPulsado, esCorrecta, opciones, cont){
+  const botones = cont.querySelectorAll('.opt');
+  botones.forEach(b=>b.disabled=true);
+  botones.forEach((b,i)=>{
+    if(opciones[i].esCorrecta) b.classList.add('correcta');
+  });
+  if(!esCorrecta) btnPulsado.classList.add('incorrecta');
+
+  const fb = document.getElementById('feedback');
+  const exp = orden[idx] && orden[idx].e ? '<div style="margin-top:8px;font-weight:400">💡 ' + orden[idx].e + '</div>' : '';
+  if(esCorrecta){
+    ok++;
+    fb.innerHTML = '<b>✓ Correcto.</b>' + exp;
+    fb.className = 'feedback show ok';
+  } else {
+    bad++;
+    fb.innerHTML = '<b>✗ No es correcto. La respuesta correcta está marcada en verde.</b>' + exp;
+    fb.className = 'feedback show bad';
+  }
+  if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise([fb]).catch(()=>{}); }
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  document.getElementById('btnSiguiente').disabled = false;
+}
+
+function siguiente(){
+  idx++;
+  mostrarPregunta();
+}
+</script>
+
+</body>
+</html>

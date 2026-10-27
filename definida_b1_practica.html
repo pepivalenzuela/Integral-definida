@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 1 · Práctica — Integral definida · Las Chapas ECOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  :root{
+    --navy:#1a2e4a; --navy-light:#2a4468; --teal:#1d7a6b; --teal-light:#e4f2ef;
+    --orange:#e07b3a; --orange-light:#fdeee0; --cream:#f5f2eb; --ink:#2b2b2b;
+    --muted:#6b6f76; --white:#ffffff; --line:#e4e0d6;
+    --red:#c65b4a; --red-light:#fbeae7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Nunito Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  h1,h2,h3,.brand{font-family:'Nunito',sans-serif}
+  a{color:inherit;text-decoration:none}
+
+  header.top{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;flex-wrap:wrap}
+  header.top a{color:#cfd8e6}
+  header.top a:hover{color:#fff}
+  header.top .sep{color:#5c6b82}
+  header.top .current{color:#fff;font-weight:800}
+
+  .wrap{max-width:720px;margin:0 auto;padding:30px 24px 60px}
+
+  .titlebar{text-align:center;margin-bottom:22px}
+  .titlebar .kicker{display:inline-block;background:var(--teal-light);color:var(--teal);font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:12px}
+  .titlebar h1{font-size:1.6rem;color:var(--navy);margin:0 0 6px;font-weight:900}
+  .titlebar p{color:var(--muted);margin:0;font-size:.95rem}
+
+  #gate{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center}
+  #gate input{width:100%;max-width:340px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;margin:14px 0}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:800;font-size:.95rem;border:none;cursor:pointer;font-family:inherit}
+  .btn.on{background:var(--teal);color:#fff}
+  .btn.on:hover{background:#166357}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f0ede4}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  #quiz{display:none}
+  .scoreboard{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin-bottom:18px;font-weight:700;color:var(--navy);font-size:.9rem}
+  .scoreboard .ok{color:var(--teal)}
+  .scoreboard .bad{color:var(--red)}
+
+  .qcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .qtag{display:inline-block;font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px}
+  .qtag.teoria{background:var(--teal-light);color:var(--teal)}
+  .qtag.aplicacion{background:var(--orange-light);color:var(--orange)}
+  .qtext{font-size:1.15rem;color:var(--navy);font-weight:700;margin-bottom:20px}
+
+  .opt{display:block;width:100%;text-align:left;background:#fbfbf9;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px;font-family:inherit;font-size:1rem;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--teal)}
+  .opt.correcta{background:var(--teal-light);border-color:var(--teal);color:var(--navy);font-weight:700}
+  .opt.incorrecta{background:var(--red-light);border-color:var(--red);color:#8a3a2e;font-weight:700}
+  .opt:disabled{cursor:default}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--teal-light);color:#12574c}
+  .feedback.bad{background:var(--red-light);color:#8a3a2e}
+
+  .controls{display:flex;justify-content:flex-end;margin-top:20px}
+
+  .nav-bottom{display:flex;justify-content:space-between;margin-top:28px}
+  @media (max-width:600px){ .wrap{padding:0 16px} }
+  mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="index.html">Portal de Integral definida</a>
+  <span class="sep">·</span>
+  <a href="definida_b1_intro.html">Bloque 1</a>
+  <span class="sep">·</span>
+  <span class="current">Práctica libre</span>
+</header>
+
+<div class="wrap">
+  <div class="titlebar">
+    <span class="kicker">Bloque 1 · Práctica libre</span>
+    <h1>Del área de figuras sencillas al área bajo una curva</h1>
+    <p>Preguntas aleatorias de teoría y de aplicación del bloque, con la explicación de cada respuesta. Cada vez que entras, el orden cambia. Ten a mano lápiz, papel y la calculadora.</p>
+  </div>
+
+  <div id="gate">
+    <p style="margin:0;color:var(--muted)">Escribe tu nombre para empezar (no hay límite de tiempo ni de intentos):</p>
+    <input type="text" id="nombre" placeholder="Nombre y apellidos">
+    <br>
+    <button class="btn on" onclick="empezar()">Empezar a practicar →</button>
+  </div>
+
+  <div id="quiz">
+    <div class="scoreboard">
+      <span id="contador">Pregunta 1</span>
+      <span><span class="ok" id="okcount">0</span> correctas · <span class="bad" id="badcount">0</span> incorrectas</span>
+    </div>
+
+    <div class="qcard">
+      <span class="qtag" id="qtag">Teoría</span>
+      <div class="qtext" id="qtext">—</div>
+      <div id="opciones"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="controls">
+        <button class="btn on" id="btnSiguiente" onclick="siguiente()" disabled>Siguiente pregunta →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom" style="flex-wrap:wrap;gap:12px">
+    <a class="btn ghost" href="index.html">🏠 Portal</a>
+    <a class="btn ghost" href="definida_b1_intro.html">← Volver a la teoría</a>
+    <a class="btn on" href="https://pepivalenzuela.github.io/panel-matematicas/#panel">Formativas en mi panel →</a>
+    <a class="btn ghost" href="definida_b2_intro.html">Bloque 2 →</a>
+  </div>
+</div>
+
+<script>
+// ---------- Banco de preguntas del bloque
+const BANCO_TEORIA = [
+ {
+  "q": "Si dividimos el intervalo [a, b] en n trozos iguales, ¿cuánto mide cada trozo?",
+  "o": [
+   "\\(\\Delta x = \\dfrac{b-a}{n}\\)",
+   "\\(\\Delta x = \\dfrac{n}{b-a}\\)",
+   "\\(\\Delta x = \\dfrac{b+a}{n}\\)",
+   "\\(\\Delta x = b-a\\)"
+  ],
+  "c": 0,
+  "e": "La longitud total del intervalo, b − a, se reparte en n partes iguales."
+ },
+ {
+  "q": "En una suma inferior, ¿qué altura se toma para cada rectángulo?",
+  "o": [
+   "La media de f(a) y f(b)",
+   "Siempre el valor de f en el punto medio",
+   "El valor más grande de f en ese trozo",
+   "El valor más pequeño de f en ese trozo"
+  ],
+  "c": 3,
+  "e": "Con la altura mínima todos los rectángulos quedan por debajo de la curva."
+ },
+ {
+  "q": "Si s es una suma inferior, S una suma superior y A el área bajo la curva, entonces:",
+  "o": [
+   "\\(s \\le S \\le A\\)",
+   "\\(A \\le s \\le S\\)",
+   "\\(s \\le A \\le S\\)",
+   "\\(S \\le A \\le s\\)"
+  ],
+  "c": 2,
+  "e": "Los rectángulos de la suma inferior quedan por debajo de la curva y los de la superior por encima: el área está entre las dos."
+ },
+ {
+  "q": "¿Qué ocurre con la aproximación del área al aumentar el número n de rectángulos?",
+  "o": [
+   "La suma se hace cada vez más grande sin límite",
+   "Empeora, porque hay más errores",
+   "Mejora: la suma se acerca cada vez más al área",
+   "No cambia nada"
+  ],
+  "c": 2,
+  "e": "Con rectángulos más estrechos, el trozo de región que sobra o falta en cada uno es cada vez menor."
+ },
+ {
+  "q": "Según Riemann, la integral definida de f entre a y b es…",
+  "o": [
+   "La suma de dos rectángulos",
+   "La derivada de f entre a y b",
+   "El límite de las sumas de los rectángulos cuando n → ∞",
+   "El valor f(b) − f(a)"
+  ],
+  "c": 2,
+  "e": "Partición → rectángulos → suma → límite: ese límite es la integral definida."
+ },
+ {
+  "q": "¿Qué recuerda el símbolo ∫ de la integral?",
+  "o": [
+   "Una «I» de «infinito»",
+   "Una «S» de «superficie», sin relación con sumas",
+   "Una «S» alargada, de «suma»",
+   "Una «f» de «función»"
+  ],
+  "c": 2,
+  "e": "La integral es una suma de infinitos rectángulos infinitamente estrechos; Leibniz alargó la S de «summa»."
+ },
+ {
+  "q": "En la notación \\(\\displaystyle\\int_a^b f(x)\\,dx\\), ¿qué recuerda el dx?",
+  "o": [
+   "La altura de los rectángulos",
+   "Que hay que derivar f",
+   "Que el resultado se multiplica por x",
+   "La anchura Δx de los rectángulos, que se hace infinitamente pequeña"
+  ],
+  "c": 3,
+  "e": "Cada sumando es f(xᵢ)·Δx; al pasar al límite Δx se convierte en dx."
+ },
+ {
+  "q": "¿Por qué se usan rectángulos para aproximar el área bajo una curva?",
+  "o": [
+   "Porque así el área sale siempre entera",
+   "Porque encajan exactamente bajo cualquier curva",
+   "Porque sabemos calcular su área: base por altura",
+   "Porque los triángulos no sirven nunca"
+  ],
+  "c": 2,
+  "e": "Aproximamos lo que no sabemos medir con figuras que sí sabemos medir."
+ },
+ {
+  "q": "Si f es continua y positiva en [a, b], la integral definida de f entre a y b representa…",
+  "o": [
+   "La longitud de la gráfica de f",
+   "El área limitada por la gráfica de f, el eje OX y las rectas x = a, x = b",
+   "La pendiente de f entre a y b",
+   "El área limitada por f y el eje OY"
+  ],
+  "c": 1,
+  "e": "Es la interpretación geométrica de la integral definida de una función positiva."
+ },
+ {
+  "q": "¿Cuánto vale la suma \\(1+2+3+\\dots+n\\)?",
+  "o": [
+   "\\(n(n+1)\\)",
+   "\\(\\dfrac{n(n+1)}{2}\\)",
+   "\\(\\dfrac{n(n+1)(2n+1)}{6}\\)",
+   "\\(\\dfrac{n^2}{2}\\)"
+  ],
+  "c": 1,
+  "e": "Es la suma de una progresión aritmética: (primero + último)·n/2. La última opción es la suma de los cuadrados."
+ },
+ {
+  "q": "Si f es creciente en [a, b], en la suma inferior la altura de cada rectángulo es el valor de f en…",
+  "o": [
+   "El extremo izquierdo de cada trozo",
+   "El punto b",
+   "El punto medio de cada trozo",
+   "El extremo derecho de cada trozo"
+  ],
+  "c": 0,
+  "e": "Si f crece, su valor más pequeño en cada trozo está a la izquierda."
+ },
+ {
+  "q": "Si f es decreciente en [a, b], en la suma superior la altura de cada rectángulo es el valor de f en…",
+  "o": [
+   "El extremo derecho de cada trozo",
+   "El punto a para todos los rectángulos",
+   "El punto medio de cada trozo",
+   "El extremo izquierdo de cada trozo"
+  ],
+  "c": 3,
+  "e": "Si f decrece, su valor más grande en cada trozo está a la izquierda."
+ },
+ {
+  "q": "¿Qué matemático formalizó la integral como límite de sumas de rectángulos?",
+  "o": [
+   "Bernhard Riemann",
+   "Leonhard Euler",
+   "Pitágoras",
+   "Pierre de Fermat"
+  ],
+  "c": 0,
+  "e": "Riemann (siglo XIX) definió la integral mediante particiones y sumas; por eso hablamos de sumas de Riemann."
+ },
+ {
+  "q": "¿Cuánto vale la suma de los cuadrados \\(1^2+2^2+\\dots+n^2\\)?",
+  "o": [
+   "\\(\\left(\\dfrac{n(n+1)}{2}\\right)^2\\)",
+   "\\(\\dfrac{n(n+1)}{2}\\)",
+   "\\(\\dfrac{n^3}{3}\\)",
+   "\\(\\dfrac{n(n+1)(2n+1)}{6}\\)"
+  ],
+  "c": 3,
+  "e": "Esta fórmula es la que permite calcular el área bajo y = x² con rectángulos. La última opción es la suma de los cubos."
+ },
+ {
+  "q": "El área bajo la parábola y = x² entre 0 y 1…",
+  "o": [
+   "No se puede calcular de ninguna forma",
+   "Es la de un triángulo de base 1 y altura 1: 1/2",
+   "No se obtiene con fórmulas de geometría; con rectángulos y límites sale 1/3",
+   "Es la de un cuadrado de lado 1: 1"
+  ],
+  "c": 2,
+  "e": "La región tiene un lado curvo; el límite de las sumas de Riemann da exactamente 1/3."
+ },
+ {
+  "q": "Si aproximamos el área bajo f en [a, b] con un solo rectángulo (n = 1), su base es…",
+  "o": [
+   "1",
+   "a + b",
+   "b − a",
+   "b"
+  ],
+  "c": 2,
+  "e": "Con n = 1 el único trozo es el intervalo entero, de longitud b − a."
+ }
+];
+
+const BANCO_APLICACION = [
+ {
+  "q": "¿Cuál es el área limitada por f(x) = 3, el eje OX y las rectas x = 1 y x = 5?",
+  "o": [
+   "3 u²",
+   "4 u²",
+   "12 u²",
+   "15 u²"
+  ],
+  "c": 2,
+  "e": "Es un rectángulo de base 5 − 1 = 4 y altura 3: 4·3 = 12."
+ },
+ {
+  "q": "¿Cuál es el área limitada por f(x) = x, el eje OX y la recta x = 4?",
+  "o": [
+   "4 u²",
+   "16 u²",
+   "2 u²",
+   "8 u²"
+  ],
+  "c": 3,
+  "e": "Triángulo de base 4 y altura f(4) = 4: 4·4/2 = 8."
+ },
+ {
+  "q": "¿Cuál es el área limitada por y = 2x + 6, el eje OX y las rectas x = −1 y x = 6?",
+  "o": [
+   "77 u²",
+   "28 u²",
+   "126 u²",
+   "98 u²"
+  ],
+  "c": 0,
+  "e": "Rectángulo 7 × 4 = 28 más triángulo de base 7 y altura 14: 49. Total 77."
+ },
+ {
+  "q": "¿Cuál es el área limitada por y = x + 1, el eje OX y las rectas x = 0 y x = 2?",
+  "o": [
+   "6 u²",
+   "4 u²",
+   "2 u²",
+   "3 u²"
+  ],
+  "c": 1,
+  "e": "Es un trapecio de alturas 1 y 3 y base 2: (1 + 3)·2/2 = 4."
+ },
+ {
+  "q": "Dividimos [0, 2] en n = 4 trozos iguales. ¿Cuánto mide cada trozo?",
+  "o": [
+   "0.5",
+   "4",
+   "0.25",
+   "2"
+  ],
+  "c": 0,
+  "e": "Δx = (2 − 0)/4 = 0.5."
+ },
+ {
+  "q": "Para f(x) = x² en [0, 1] con n = 2 trozos, ¿cuánto vale la suma superior?",
+  "o": [
+   "0.5",
+   "1",
+   "0.125",
+   "0.625"
+  ],
+  "c": 3,
+  "e": "Trozos [0, 1/2] y [1/2, 1]; alturas máximas f(1/2) = 1/4 y f(1) = 1: (1/2)(1/4) + (1/2)(1) = 5/8."
+ },
+ {
+  "q": "Para f(x) = x² en [0, 1] con n = 2 trozos, ¿cuánto vale la suma inferior?",
+  "o": [
+   "0.625",
+   "0.125",
+   "0",
+   "0.25"
+  ],
+  "c": 1,
+  "e": "Alturas mínimas f(0) = 0 y f(1/2) = 1/4: (1/2)·0 + (1/2)(1/4) = 1/8."
+ },
+ {
+  "q": "Para f(x) = x en [0, 1] con n = 4 trozos, ¿cuánto vale la suma inferior?",
+  "o": [
+   "0.5",
+   "0.25",
+   "0.625",
+   "0.375"
+  ],
+  "c": 3,
+  "e": "Alturas 0, 1/4, 2/4, 3/4 y base 1/4: (0 + 1 + 2 + 3)/16 = 6/16 = 0.375."
+ },
+ {
+  "q": "Para f(x) = x en [0, 1] con n = 4 trozos, ¿cuánto vale la suma superior?",
+  "o": [
+   "0.5",
+   "0.375",
+   "0.625",
+   "0.75"
+  ],
+  "c": 2,
+  "e": "Alturas 1/4, 2/4, 3/4, 1 y base 1/4: (1 + 2 + 3 + 4)/16 = 10/16 = 0.625."
+ },
+ {
+  "q": "Al calcular el área bajo f(x) = x en [0, 1] llegamos a la suma \\(\\dfrac{n^2+n}{2n^2}\\). ¿Cuánto vale el área?",
+  "o": [
+   "1",
+   "1/2",
+   "0",
+   "2"
+  ],
+  "c": 1,
+  "e": "\\(\\lim_{n\\to\\infty}\\frac{n^2+n}{2n^2} = \\frac12\\) (cociente de los coeficientes de mayor grado)."
+ },
+ {
+  "q": "Al calcular el área bajo f(x) = x² en [0, 1] llegamos a la suma \\(\\dfrac{(n+1)(2n+1)}{6n^2}\\). ¿Cuánto vale el área?",
+  "o": [
+   "1/6",
+   "2/3",
+   "1/2",
+   "1/3"
+  ],
+  "c": 3,
+  "e": "El numerador es \\(2n^2+3n+1\\); el límite es 2/6 = 1/3."
+ },
+ {
+  "q": "La suma superior de f(x) = x en [0, 1] con n trozos es \\(\\dfrac{n+1}{2n}\\). ¿Cuánto vale con n = 10?",
+  "o": [
+   "0.45",
+   "0.5",
+   "0.55",
+   "1.1"
+  ],
+  "c": 2,
+  "e": "(10 + 1)/20 = 11/20 = 0.55; algo más que el área real, 0.5."
+ },
+ {
+  "q": "Para f(x) = 4 − x² en [0, 2] con n = 2 trozos, ¿cuánto vale la suma superior?",
+  "o": [
+   "7",
+   "8",
+   "3",
+   "16/3"
+  ],
+  "c": 0,
+  "e": "f es decreciente: alturas f(0) = 4 y f(1) = 3, base 1: 4 + 3 = 7."
+ },
+ {
+  "q": "Para f(x) = 4 − x² en [0, 2] con n = 2 trozos, ¿cuánto vale la suma inferior?",
+  "o": [
+   "4",
+   "3",
+   "0",
+   "7"
+  ],
+  "c": 1,
+  "e": "f es decreciente: alturas f(1) = 3 y f(2) = 0, base 1: 3 + 0 = 3."
+ },
+ {
+  "q": "¿Cuál es el área limitada por y = |x|, el eje OX y las rectas x = −2 y x = 2?",
+  "o": [
+   "4 u²",
+   "8 u²",
+   "2 u²",
+   "0 u²"
+  ],
+  "c": 0,
+  "e": "Son dos triángulos de base 2 y altura 2: 2 + 2 = 4."
+ },
+ {
+  "q": "¿Cuál es el área del triángulo limitado por y = 5 − x y los dos ejes?",
+  "o": [
+   "5 u²",
+   "25 u²",
+   "12.5 u²",
+   "10 u²"
+  ],
+  "c": 2,
+  "e": "La recta corta a los ejes en (5, 0) y (0, 5): área 5·5/2 = 12.5."
+ }
+];
+
+let orden = [];
+let idx = 0;
+let ok = 0, bad = 0;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function empezar(){
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!nombre){ alert('Escribe tu nombre para empezar.'); return; }
+  document.getElementById('gate').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  generarSecuencia();
+  mostrarPregunta();
+}
+
+function generarSecuencia(){
+  const todas = shuffle(
+    BANCO_TEORIA.map(x=>({...x,tipo:'teoria'})).concat(
+    BANCO_APLICACION.map(x=>({...x,tipo:'aplicacion'})))
+  );
+  orden = todas;
+  idx = 0; ok = 0; bad = 0;
+}
+
+function mostrarPregunta(){
+  if(idx >= orden.length){ generarSecuencia(); }
+  const item = orden[idx];
+  document.getElementById('contador').textContent = `Pregunta ${idx+1}`;
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  const tag = document.getElementById('qtag');
+  tag.textContent = item.tipo === 'teoria' ? 'Teoría' : 'Aplicación';
+  tag.className = 'qtag ' + item.tipo;
+  document.getElementById('qtext').innerHTML = item.q;
+
+  const opciones = shuffle(item.o.map((texto,i)=>({texto, esCorrecta:i===item.c})));
+  const cont = document.getElementById('opciones');
+  cont.innerHTML='';
+  opciones.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML = op.texto;
+    btn.onclick = ()=>responder(btn, op.esCorrecta, opciones, cont);
+    cont.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnSiguiente').disabled = true;
+  if(window.MathJax){ MathJax.typesetClear([cont, document.getElementById('qtext')]); MathJax.typesetPromise([cont, document.getElementById('qtext')]); }
+}
+
+function responder(btnPulsado, esCorrecta, opciones, cont){
+  const botones = cont.querySelectorAll('.opt');
+  botones.forEach(b=>b.disabled=true);
+  botones.forEach((b,i)=>{
+    if(opciones[i].esCorrecta) b.classList.add('correcta');
+  });
+  if(!esCorrecta) btnPulsado.classList.add('incorrecta');
+
+  const fb = document.getElementById('feedback');
+  const exp = orden[idx] && orden[idx].e ? '<div style="margin-top:8px;font-weight:400">💡 ' + orden[idx].e + '</div>' : '';
+  if(esCorrecta){
+    ok++;
+    fb.innerHTML = '<b>✓ Correcto.</b>' + exp;
+    fb.className = 'feedback show ok';
+  } else {
+    bad++;
+    fb.innerHTML = '<b>✗ No es correcto. La respuesta correcta está marcada en verde.</b>' + exp;
+    fb.className = 'feedback show bad';
+  }
+  if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise([fb]).catch(()=>{}); }
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  document.getElementById('btnSiguiente').disabled = false;
+}
+
+function siguiente(){
+  idx++;
+  mostrarPregunta();
+}
+</script>
+
+</body>
+</html>

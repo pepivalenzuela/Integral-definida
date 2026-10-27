@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 4 · Práctica — Integral definida · Las Chapas ECOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  :root{
+    --navy:#1a2e4a; --navy-light:#2a4468; --teal:#1d7a6b; --teal-light:#e4f2ef;
+    --orange:#e07b3a; --orange-light:#fdeee0; --cream:#f5f2eb; --ink:#2b2b2b;
+    --muted:#6b6f76; --white:#ffffff; --line:#e4e0d6;
+    --red:#c65b4a; --red-light:#fbeae7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Nunito Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  h1,h2,h3,.brand{font-family:'Nunito',sans-serif}
+  a{color:inherit;text-decoration:none}
+
+  header.top{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;flex-wrap:wrap}
+  header.top a{color:#cfd8e6}
+  header.top a:hover{color:#fff}
+  header.top .sep{color:#5c6b82}
+  header.top .current{color:#fff;font-weight:800}
+
+  .wrap{max-width:720px;margin:0 auto;padding:30px 24px 60px}
+
+  .titlebar{text-align:center;margin-bottom:22px}
+  .titlebar .kicker{display:inline-block;background:var(--teal-light);color:var(--teal);font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:12px}
+  .titlebar h1{font-size:1.6rem;color:var(--navy);margin:0 0 6px;font-weight:900}
+  .titlebar p{color:var(--muted);margin:0;font-size:.95rem}
+
+  #gate{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center}
+  #gate input{width:100%;max-width:340px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;margin:14px 0}
+  .btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:800;font-size:.95rem;border:none;cursor:pointer;font-family:inherit}
+  .btn.on{background:var(--teal);color:#fff}
+  .btn.on:hover{background:#166357}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f0ede4}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  #quiz{display:none}
+  .scoreboard{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin-bottom:18px;font-weight:700;color:var(--navy);font-size:.9rem}
+  .scoreboard .ok{color:var(--teal)}
+  .scoreboard .bad{color:var(--red)}
+
+  .qcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .qtag{display:inline-block;font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px}
+  .qtag.teoria{background:var(--teal-light);color:var(--teal)}
+  .qtag.aplicacion{background:var(--orange-light);color:var(--orange)}
+  .qtext{font-size:1.15rem;color:var(--navy);font-weight:700;margin-bottom:20px}
+
+  .opt{display:block;width:100%;text-align:left;background:#fbfbf9;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px;font-family:inherit;font-size:1rem;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--teal)}
+  .opt.correcta{background:var(--teal-light);border-color:var(--teal);color:var(--navy);font-weight:700}
+  .opt.incorrecta{background:var(--red-light);border-color:var(--red);color:#8a3a2e;font-weight:700}
+  .opt:disabled{cursor:default}
+
+  .feedback{margin-top:16px;padding:14px 16px;border-radius:10px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--teal-light);color:#12574c}
+  .feedback.bad{background:var(--red-light);color:#8a3a2e}
+
+  .controls{display:flex;justify-content:flex-end;margin-top:20px}
+
+  .nav-bottom{display:flex;justify-content:space-between;margin-top:28px}
+  @media (max-width:600px){ .wrap{padding:0 16px} }
+  mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="index.html">Portal de Integral definida</a>
+  <span class="sep">·</span>
+  <a href="definida_b4_intro.html">Bloque 4</a>
+  <span class="sep">·</span>
+  <span class="current">Práctica libre</span>
+</header>
+
+<div class="wrap">
+  <div class="titlebar">
+    <span class="kicker">Bloque 4 · Práctica libre</span>
+    <h1>Cálculo de integrales definidas</h1>
+    <p>Preguntas aleatorias de teoría y de aplicación del bloque, con la explicación de cada respuesta. Cada vez que entras, el orden cambia. Ten a mano lápiz, papel y la calculadora.</p>
+  </div>
+
+  <div id="gate">
+    <p style="margin:0;color:var(--muted)">Escribe tu nombre para empezar (no hay límite de tiempo ni de intentos):</p>
+    <input type="text" id="nombre" placeholder="Nombre y apellidos">
+    <br>
+    <button class="btn on" onclick="empezar()">Empezar a practicar →</button>
+  </div>
+
+  <div id="quiz">
+    <div class="scoreboard">
+      <span id="contador">Pregunta 1</span>
+      <span><span class="ok" id="okcount">0</span> correctas · <span class="bad" id="badcount">0</span> incorrectas</span>
+    </div>
+
+    <div class="qcard">
+      <span class="qtag" id="qtag">Teoría</span>
+      <div class="qtext" id="qtext">—</div>
+      <div id="opciones"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="controls">
+        <button class="btn on" id="btnSiguiente" onclick="siguiente()" disabled>Siguiente pregunta →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom" style="flex-wrap:wrap;gap:12px">
+    <a class="btn ghost" href="index.html">🏠 Portal</a>
+    <a class="btn ghost" href="definida_b4_intro.html">← Volver a la teoría</a>
+    <a class="btn on" href="https://pepivalenzuela.github.io/panel-matematicas/#panel">Formativas en mi panel →</a>
+    <a class="btn ghost" href="definida_b5_intro.html">Bloque 5 →</a>
+  </div>
+</div>
+
+<script>
+// ---------- Banco de preguntas del bloque
+const BANCO_TEORIA = [
+ {
+  "q": "¿Cuáles son los pasos para calcular una integral definida con la regla de Barrow?",
+  "o": [
+   "Derivar f y sustituir los límites",
+   "Calcular una primitiva G, sustituir los límites y hacer G(b) − G(a)",
+   "Sumar rectángulos hasta el infinito",
+   "Calcular f(b) − f(a)"
+  ],
+  "c": 1,
+  "e": "Primero la primitiva, después sustituir y restar."
+ },
+ {
+  "q": "¿Se escribe la constante de integración + C en una integral definida?",
+  "o": [
+   "Solo si la integral es negativa",
+   "No, porque al restar G(b) − G(a) se anula",
+   "Solo si a = 0",
+   "Sí, siempre"
+  ],
+  "c": 1,
+  "e": "El resultado de una integral definida es un número, sin constante."
+ },
+ {
+  "q": "¿Puede salir negativa una integral definida?",
+  "o": [
+   "No, nunca",
+   "Sí, por ejemplo si la función es negativa en el intervalo",
+   "Solo si los límites son negativos",
+   "Solo si nos hemos equivocado"
+  ],
+  "c": 1,
+  "e": "La integral definida no es siempre un área; un área sí es siempre positiva."
+ },
+ {
+  "q": "¿Qué significa la notación \\(\\Big[G(x)\\Big]_a^b\\)?",
+  "o": [
+   "G(b) − G(a)",
+   "G(a) − G(b)",
+   "G(b) + G(a)",
+   "G(a)·G(b)"
+  ],
+  "c": 0,
+  "e": "Es la forma abreviada de escribir la resta de la regla de Barrow."
+ },
+ {
+  "q": "Un error frecuente al aplicar Barrow es…",
+  "o": [
+   "Simplificar la función antes de integrar",
+   "Usar una primitiva sin C",
+   "Comprobar que f es continua",
+   "Restar G(a) − G(b), lo que cambia el signo del resultado"
+  ],
+  "c": 3,
+  "e": "Primero va el límite superior: G(b) − G(a)."
+ },
+ {
+  "q": "¿Por qué no se puede aplicar la regla de Barrow a \\(\\displaystyle\\int_{-1}^{1}\\frac{1}{x^2}\\,dx\\)?",
+  "o": [
+   "Porque el intervalo es simétrico",
+   "Porque 1/x² no tiene primitiva",
+   "Porque 1/x² no es continua en [−1, 1] (no existe en x = 0)",
+   "Sí se puede: vale −2"
+  ],
+  "c": 2,
+  "e": "Barrow exige continuidad en todo el intervalo. Aplicarla «a ciegas» daría −2, un resultado absurdo para una función positiva."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_a^b k\\,dx\\) si k es constante?",
+  "o": [
+   "0",
+   "kb",
+   "k(b − a)",
+   "k"
+  ],
+  "c": 2,
+  "e": "Es el área de un rectángulo de base b − a y altura k."
+ },
+ {
+  "q": "¿Cuál es una primitiva de \\(e^{2x}\\)?",
+  "o": [
+   "\\(e^{2x}\\)",
+   "\\(\\dfrac{e^{2x}}{2}\\)",
+   "\\(\\dfrac{e^{2x+1}}{2x+1}\\)",
+   "\\(2e^{2x}\\)"
+  ],
+  "c": 1,
+  "e": "Derivando \\(\\frac{e^{2x}}{2}\\) se obtiene \\(e^{2x}\\)."
+ },
+ {
+  "q": "Si n ≥ 0, ¿cuánto vale \\(\\displaystyle\\int_0^1 x^n\\,dx\\)?",
+  "o": [
+   "\\(\\dfrac{1}{n+1}\\)",
+   "1",
+   "n + 1",
+   "\\(\\dfrac{1}{n}\\)"
+  ],
+  "c": 0,
+  "e": "\\(\\left[\\frac{x^{n+1}}{n+1}\\right]_0^1 = \\frac{1}{n+1}\\)."
+ },
+ {
+  "q": "Si F es una primitiva de f, \\(\\displaystyle\\int_a^b \\big(5f(x)-7\\big)\\,dx\\) es igual a…",
+  "o": [
+   "5F(b) − 7",
+   "F(b) − F(a) − 7(b − a)",
+   "5(F(b) − F(a)) − 7(b − a)",
+   "5(F(b) − F(a)) − 7"
+  ],
+  "c": 2,
+  "e": "Una primitiva de 5f − 7 es 5F(x) − 7x."
+ },
+ {
+  "q": "Si F es una primitiva de f, una primitiva de \\(F(x)^2\\cdot f(x)\\) es…",
+  "o": [
+   "\\(\\dfrac{F(x)^3}{3}\\)",
+   "\\(2F(x)\\,f(x)\\)",
+   "\\(F(x)^3\\)",
+   "\\(\\dfrac{F(x)^2}{2}\\)"
+  ],
+  "c": 0,
+  "e": "Es del tipo g²·g' con g = F, porque F' = f."
+ },
+ {
+  "q": "Para calcular \\(\\displaystyle\\int_1^2 \\frac{x^2-3}{x^2}\\,dx\\), lo primero que conviene hacer es…",
+  "o": [
+   "Derivar el cociente",
+   "Cambiar los límites de integración",
+   "Integrar numerador y denominador por separado",
+   "Separar: \\(1-\\dfrac{3}{x^2}\\)"
+  ],
+  "c": 3,
+  "e": "Al separar la fracción quedan dos integrales inmediatas."
+ },
+ {
+  "q": "Antes de aplicar la regla de Barrow hay que comprobar que…",
+  "o": [
+   "f es continua en todo el intervalo [a, b]",
+   "f es derivable",
+   "f es positiva",
+   "a y b son positivos"
+  ],
+  "c": 0,
+  "e": "Es la hipótesis del teorema."
+ },
+ {
+  "q": "Si a &gt; b, \\(\\displaystyle\\int_a^b f(x)\\,dx\\) es igual a…",
+  "o": [
+   "\\(\\displaystyle\\int_b^a f(x)\\,dx\\)",
+   "0",
+   "No tiene sentido",
+   "\\(-\\displaystyle\\int_b^a f(x)\\,dx\\)"
+  ],
+  "c": 3,
+  "e": "Barrow sigue valiendo: G(b) − G(a) = −(G(a) − G(b))."
+ },
+ {
+  "q": "¿Cuál es una primitiva de \\(\\dfrac{2x}{x^2+1}\\)?",
+  "o": [
+   "\\(x^2\\ln(x^2+1)\\)",
+   "\\(\\dfrac{1}{x^2+1}\\)",
+   "\\(\\ln(x^2+1)\\)",
+   "\\(\\operatorname{arctg} x\\)"
+  ],
+  "c": 2,
+  "e": "Es del tipo f'/f: el numerador es la derivada del denominador."
+ },
+ {
+  "q": "Si \\(\\int_a^b f(x)\\,dx = 0\\) y f es continua, entonces…",
+  "o": [
+   "f es positiva",
+   "f se anula o cambia de signo en [a, b]",
+   "a = b obligatoriamente",
+   "f es siempre 0"
+  ],
+  "c": 1,
+  "e": "Si f fuera positiva (o negativa) en todo el intervalo, la integral no podría ser 0."
+ }
+];
+
+const BANCO_APLICACION = [
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_1^2 x^2\\,dx\\)?",
+  "o": [
+   "3",
+   "7/3",
+   "8/3",
+   "1/3"
+  ],
+  "c": 1,
+  "e": "[x³/3]₁² = 8/3 − 1/3 = 7/3."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_1^2 \\frac{x^2-3}{x^2}\\,dx\\)?",
+  "o": [
+   "−7/2",
+   "−1/2",
+   "1/2",
+   "5/2"
+  ],
+  "c": 1,
+  "e": "[x + 3/x]₁² = (2 + 3/2) − (1 + 3) = −1/2."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_{-1}^1 (x^3-x)\\,dx\\)?",
+  "o": [
+   "−1",
+   "1/2",
+   "0",
+   "−1/2"
+  ],
+  "c": 2,
+  "e": "[x⁴/4 − x²/2]₋₁¹ = (1/4 − 1/2) − (1/4 − 1/2) = 0. (Además, x³ − x es impar.)"
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^2 \\frac{\\sqrt{x}}{2}\\,dx\\)?",
+  "o": [
+   "\\(\\dfrac{4\\sqrt2}{3}\\)",
+   "\\(\\sqrt2\\)",
+   "\\(\\dfrac{2\\sqrt2}{3}\\)",
+   "\\(\\dfrac{\\sqrt2}{3}\\)"
+  ],
+  "c": 2,
+  "e": "Una primitiva es \\(\\frac12\\cdot\\frac{x^{3/2}}{3/2} = \\frac{x\\sqrt x}{3}\\); en 2: \\(\\frac{2\\sqrt2}{3}\\)."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_2^3 (x^2-3x+1)\\,dx\\)?",
+  "o": [
+   "−3/2",
+   "−1/6",
+   "−4/3",
+   "1/6"
+  ],
+  "c": 1,
+  "e": "[x³/3 − 3x²/2 + x]₂³ = (−3/2) − (−4/3) = −1/6."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^1 e^{2x}\\,dx\\)?",
+  "o": [
+   "\\(e^2-1\\)",
+   "\\(\\dfrac{e^2}{2}\\)",
+   "\\(\\dfrac{e^2-1}{2}\\)",
+   "\\(2e^2-2\\)"
+  ],
+  "c": 2,
+  "e": "\\(\\left[\\frac{e^{2x}}{2}\\right]_0^1 = \\frac{e^2}{2}-\\frac12\\)."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^1 \\frac{2x}{x^2+1}\\,dx\\)?",
+  "o": [
+   "\\(2\\ln 2\\)",
+   "1",
+   "\\(\\ln 2\\)",
+   "\\(\\dfrac{\\pi}{4}\\)"
+  ],
+  "c": 2,
+  "e": "[ln(x² + 1)]₀¹ = ln 2 − ln 1 = ln 2."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^{\\pi/2} \\cos x\\,dx\\)?",
+  "o": [
+   "0",
+   "−1",
+   "π/2",
+   "1"
+  ],
+  "c": 3,
+  "e": "[sen x]₀^(π/2) = 1 − 0 = 1."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_1^4 \\frac{1}{\\sqrt{x}}\\,dx\\)?",
+  "o": [
+   "2",
+   "3/2",
+   "1",
+   "4"
+  ],
+  "c": 0,
+  "e": "Una primitiva es 2√x: 2·2 − 2·1 = 2."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^2 (3x^2-2x+1)\\,dx\\)?",
+  "o": [
+   "10",
+   "6",
+   "4",
+   "8"
+  ],
+  "c": 1,
+  "e": "[x³ − x² + x]₀² = 8 − 4 + 2 = 6."
+ },
+ {
+  "q": "f es continua en [2, 3] y F es una primitiva de f con F(2) = 1 y F(3) = 2. ¿Cuánto vale la integral de f entre 2 y 3?",
+  "o": [
+   "1",
+   "2",
+   "3",
+   "−1"
+  ],
+  "c": 0,
+  "e": "Barrow: F(3) − F(2) = 2 − 1 = 1."
+ },
+ {
+  "q": "F es una primitiva de f con F(2) = 1 y F(3) = 2. ¿Cuánto vale \\(\\displaystyle\\int_2^3 \\big(5f(x)-7\\big)\\,dx\\)?",
+  "o": [
+   "−2",
+   "−11",
+   "−12",
+   "5"
+  ],
+  "c": 0,
+  "e": "[5F(x) − 7x]₂³ = (10 − 21) − (5 − 14) = −11 + 9 = −2."
+ },
+ {
+  "q": "F es una primitiva de f con F(2) = 1 y F(3) = 2. ¿Cuánto vale \\(\\displaystyle\\int_2^3 F(x)^2 f(x)\\,dx\\)?",
+  "o": [
+   "3",
+   "8/3",
+   "7/3",
+   "1"
+  ],
+  "c": 2,
+  "e": "[F(x)³/3]₂³ = 8/3 − 1/3 = 7/3."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^1 (x+1)^3\\,dx\\)?",
+  "o": [
+   "4",
+   "7/4",
+   "1/4",
+   "15/4"
+  ],
+  "c": 3,
+  "e": "[(x + 1)⁴/4]₀¹ = 16/4 − 1/4 = 15/4."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_1^2 \\frac{1}{x^2}\\,dx\\)?",
+  "o": [
+   "−1/2",
+   "3/4",
+   "1/2",
+   "1"
+  ],
+  "c": 2,
+  "e": "[−1/x]₁² = −1/2 + 1 = 1/2."
+ },
+ {
+  "q": "¿Cuánto vale \\(\\displaystyle\\int_0^{\\ln 3} e^{x}\\,dx\\)?",
+  "o": [
+   "1",
+   "2",
+   "3",
+   "\\(\\ln 3\\)"
+  ],
+  "c": 1,
+  "e": "\\([e^x]_0^{\\ln 3} = 3 - 1 = 2\\)."
+ }
+];
+
+let orden = [];
+let idx = 0;
+let ok = 0, bad = 0;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function empezar(){
+  const nombre = document.getElementById('nombre').value.trim();
+  if(!nombre){ alert('Escribe tu nombre para empezar.'); return; }
+  document.getElementById('gate').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  generarSecuencia();
+  mostrarPregunta();
+}
+
+function generarSecuencia(){
+  const todas = shuffle(
+    BANCO_TEORIA.map(x=>({...x,tipo:'teoria'})).concat(
+    BANCO_APLICACION.map(x=>({...x,tipo:'aplicacion'})))
+  );
+  orden = todas;
+  idx = 0; ok = 0; bad = 0;
+}
+
+function mostrarPregunta(){
+  if(idx >= orden.length){ generarSecuencia(); }
+  const item = orden[idx];
+  document.getElementById('contador').textContent = `Pregunta ${idx+1}`;
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  const tag = document.getElementById('qtag');
+  tag.textContent = item.tipo === 'teoria' ? 'Teoría' : 'Aplicación';
+  tag.className = 'qtag ' + item.tipo;
+  document.getElementById('qtext').innerHTML = item.q;
+
+  const opciones = shuffle(item.o.map((texto,i)=>({texto, esCorrecta:i===item.c})));
+  const cont = document.getElementById('opciones');
+  cont.innerHTML='';
+  opciones.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML = op.texto;
+    btn.onclick = ()=>responder(btn, op.esCorrecta, opciones, cont);
+    cont.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('btnSiguiente').disabled = true;
+  if(window.MathJax){ MathJax.typesetClear([cont, document.getElementById('qtext')]); MathJax.typesetPromise([cont, document.getElementById('qtext')]); }
+}
+
+function responder(btnPulsado, esCorrecta, opciones, cont){
+  const botones = cont.querySelectorAll('.opt');
+  botones.forEach(b=>b.disabled=true);
+  botones.forEach((b,i)=>{
+    if(opciones[i].esCorrecta) b.classList.add('correcta');
+  });
+  if(!esCorrecta) btnPulsado.classList.add('incorrecta');
+
+  const fb = document.getElementById('feedback');
+  const exp = orden[idx] && orden[idx].e ? '<div style="margin-top:8px;font-weight:400">💡 ' + orden[idx].e + '</div>' : '';
+  if(esCorrecta){
+    ok++;
+    fb.innerHTML = '<b>✓ Correcto.</b>' + exp;
+    fb.className = 'feedback show ok';
+  } else {
+    bad++;
+    fb.innerHTML = '<b>✗ No es correcto. La respuesta correcta está marcada en verde.</b>' + exp;
+    fb.className = 'feedback show bad';
+  }
+  if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise([fb]).catch(()=>{}); }
+  document.getElementById('okcount').textContent = ok;
+  document.getElementById('badcount').textContent = bad;
+  document.getElementById('btnSiguiente').disabled = false;
+}
+
+function siguiente(){
+  idx++;
+  mostrarPregunta();
+}
+</script>
+
+</body>
+</html>
